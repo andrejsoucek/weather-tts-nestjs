@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AtisController } from './http/atis.controller';
+import { DashboardController } from './http/dashboard.controller';
+import { SettingsController } from './http/settings.controller';
 
 @Module({
   imports: [],
-  controllers: [AtisController],
+  controllers: [DashboardController, SettingsController],
 })
 export class AtisUiModule {}

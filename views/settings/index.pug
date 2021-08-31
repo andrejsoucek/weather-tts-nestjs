@@ -1,0 +1,159 @@
+extends ../@main.pug
+block active
+    -var selected = 'settings'
+block content
+    div.buttons.is-right
+        if appRunning
+            a(href='/stop').button.is-danger
+                span.icon
+                    i.fas.fa-pause
+                span Pause application
+        else
+            a(href='/start').button.is-success
+                span.icon
+                    i.fas.fa-play
+                span Start application
+    div.tabs
+        ul
+            li(data-tab='general').is-active
+                a General settings
+            li(data-tab='google')
+                a Google settings
+            li(data-tab='message')
+                a Message settings
+    form(method='POST' action='/save')
+        div(data-tabs-content='general')
+            div.field
+                label(for='gpio-input').label GPIO Input PIN Number:
+                div.control
+                    input#gpio-input.input(type='number', name='gpio-input', value=config.gpio.input)
+                p.help Raspberry GPIO pin number which will trigger the TTS
+            div.field
+                label(for='gpio-output').label GPIO Output PIN Number:
+                div.control
+                    input#gpio-output.input(type='number', name='gpio-output', value=config.gpio.output)
+                p.help Raspberry GPIO pin number which will handle the PTT
+            div.field
+                label(for='realtime-url').label Realtime.txt URL:
+                div.control
+                    input#realtime-url.input(type='text', name='realtime-url', value=config.realtime.url)
+                p.help URL to fetch the weather from
+        div(data-tabs-content='google').is-hidden
+            div.field
+                label(for='google-language').label TTS language:
+                div.control
+                    div.select
+                        select#google-language(name='google-language')
+                            each lang in languages
+                                option(value=lang.id, selected=lang.selected) #{lang.label}
+                p.help Language of the message
+        div(data-tabs-content='message').is-hidden
+            h2.is-size-3 Message
+            div.field
+                label(for='message-template').label Message template:
+                div.control
+                    textarea#message-template(name='message-template', rows='6', cols='66').textarea
+                        | #{config.message.template}
+            h3.is-size-4 Placeholders
+            ul
+                li
+                    strong <#TIME>
+                    |  - UTC time
+                li
+                    strong <#WIND>
+                    |  - wind information, calm when < 2 kts
+                li
+                    strong <#RWY>
+                    |  - runway in use
+                li
+                    strong <#CIRCUIT>
+                    |  - left/right hand pattern
+                li
+                    strong <#TEMP>
+                    |  - temperature
+                li
+                    strong <#CLOUDBASE>
+                li
+                    strong <#QNH>
+                li
+                    strong <#BREAK-NONE>
+                    |  - almost no pause during reading the message
+                li
+                    strong <#BREAK-SHORT>
+                    |  - short pause during reading the message
+                li
+                    strong <#BREAK-LONG>
+                    |  - long pause during reading the message
+            h2.is-size-3 Time
+            div.field
+                label(for='message-timezone').label Message Timezone:
+                div.control
+                    div.select
+                        input#message-timezone.input(list="timezones" name='message-timezone', value=config.message.timezone, placeholder='Start typing')
+                        datalist#timezones
+                            each tz in tzs
+                                option(value=tz)
+                p.help Time from the realtime.txt will be converted to the UTC using this timezone
+            h2.is-size-3 Wind
+            div.field
+                label(for='message-wind-calm').label Wind calm:
+                div.control
+                    input#message-wind-calm.input(type='text', name='message-wind-calm', value=config.message.wind.calm)
+            div.field
+                label(for='message-wind-speed-unit').label Wind speed unit:
+                div.control
+                    input#message-wind-speed-unit.input(type='text', name='message-wind-speed-unit', value=config.message.wind.speedUnits)
+            div.field
+                label(for='message-wind-bearing-unit').label Wind bearing unit:
+                div.control
+                    input#message-wind-bearing-unit.input(type='text', name='message-wind-bearing-unit', value=config.message.wind.bearingUnits)
+            div.field
+                label(for='message-wind-gust').label Wind gust:
+                div.control
+                    input#message-wind-gust.input(type='text', name='message-wind-gust', value=config.message.wind.gust)
+            h2.is-size-3 Other units
+            div.field
+                label(for='message-temperature-unit').label Temperature unit:
+                div.control
+                    input#message-temperature-unit.input(type='text', name='message-temperature-unit', value=config.message.temperature.units)
+            div.field
+                label(for='message-cloudbase-unit').label Cloudbase unit:
+                div.control
+                    input#message-cloudbase-unit.input(type='text', name='message-cloudbase-unit', value=config.message.cloudbase.units)
+            h2.is-size-3 Runway
+            each rwy, index in rwySettings
+                div.field.is-narrow
+                    label(for='message-rwy-comparator-' + index).label.is-narrow If wind direction
+                    div.field-body
+                        div.field.is-narrow
+                            div.control
+                                div.select
+                                    select(id='message-rwy-comparator-' + index, name='message-rwy-comparator-' + index)
+                                        each option in rwy.options
+                                            option(value=option.id, selected=option.selected) #{option.label}
+                        div.field.is-narrow
+                            input(id='message-rwy-value-' + index, type='number', name='message-rwy-value-' + index, value=rwy.value, min=1, max=360, step=1).input
+                        div.field.is-narrow then use runway
+                        div.field.is-narrow
+                            input(id='message-rwy-result-' + index, type='number', name='message-rwy-result-' + index, value=rwy.result, min=1, max=36, step=1).input
+            h2.is-size-3 Circuit/Pattern
+            each c, index in circuitSettings
+                div.field.is-narrow
+                    label(for='message-circuit-comparator-' + index).label.is-narrow If wind direction
+                    div.field-body
+                        div.field.is-narrow
+                            div.control
+                                div.select
+                                    select(id='message-circuit-comparator-' + index, name='message-circuit-comparator-' + index)
+                                        each option in c.options
+                                            option(value=option.id, selected=option.selected) #{option.label}
+                        div.field.is-narrow
+                            input(id='message-circuit-value-' + index, type='number', name='message-circuit-value-' + index, value=c.value, min=1, max=360, step=1).input
+                        div.field.is-narrow then fly
+                        div.field.is-narrow
+                            input(id='message-circuit-result-' + index, type='text', name='message-circuit-result-' + index, value=c.result).input
+                        div.field.is-narrow pattern
+        div.field.mt-4.has-text-centered
+            div.control
+                input(type='submit', value='Save settings').button.is-primary
+    include ./tabs.pug

@@ -1,0 +1,31 @@
+extends ../@main.pug
+block active
+    -var selected = 'dashboard'
+block content
+    div.box.mt-5
+        nav.level
+            div.level-item.has-text-centered
+                div
+                    p.heading Messages created
+                    p.title #{messageStats.totalMessages}
+            div.level-item.has-text-centered
+                div
+                    p.heading Total messages length
+                    p.title #{messageStats.totalCharacters}
+            div.level-item.has-text-centered
+                div
+                    p.heading Average messages/day
+                    p.title #{messageStats.messagesPerDayAvg}
+            div.level-item.has-text-centered
+                div
+                    p.heading Max messages/day
+                    p.title #{messageStats.messagesPerDayMax}
+
+    div.box
+        div.columns.is-centered.pt-4.pb-4
+            p.heading Daily usage
+        div.columns.is-centered.pt-4.pb-4(style={height: '450px'})
+            canvas#chart-usage
+
+    include ./chart.pug
+

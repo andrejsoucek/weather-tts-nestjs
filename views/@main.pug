@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+html(lang='en')
+    head
+        meta(charset='UTF-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        meta(http-equiv='X-UA-Compatible', content='ie=edge')
+        title Weather TTS
+        link(rel='stylesheet', href='bulma/bulma.min.css')
+        link(rel='stylesheet', href='chartjs/Chart.min.css')
+        script(defer, src='fa/all.js')
+        script(src='chartjs/Chart.min.js')
+        script(src='chartjs-datalabels/chartjs-plugin-datalabels.min.js')
+    body
+        section.section
+            div.container
+                include ./@menu.pug
+                block content
+        footer.footer
+            div.content.has-text-centered
+                strong Weather TTS
+                |  by
+                |
+                a(href='https://github.com/andrejsoucek', target='_blank') Andrej Souček
+                |  &copy; 2020
+
+        style.
+            body {
+                display: flex;
+                min-height: 100vh;
+                flex-direction: column;
+            }
+            .section {
+                flex: 1;
+            }
+            [list]::-webkit-calendar-picker-indicator {
+                display: none;
+            }

@@ -1,0 +1,71 @@
+script.
+    const canvas = document.getElementById('chart-usage')
+    const chartLabels = !{JSON.stringify(chartLabels)}
+    const chartValues = !{JSON.stringify(chartValues)}
+
+    new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: chartLabels,
+            datasets: [{
+                label: false,
+                backgroundColor: '#00D1B2',
+                borderColor: '#00D1B2',
+                borderWidth: 1,
+                data: chartValues,
+            }],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            tooltips: {
+                enabled: false,
+            },
+            legend: {
+                display: false,
+            },
+            title: {
+                display: false
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        fontStyle: 'bold',
+                        fontColor: '#000000'
+                    },
+                    gridLines: {
+                        color: 'rgba(0, 0, 0, 0)',
+                        zeroLineColor: '#000000',
+                    },
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 5,
+                        suggestedMax: Math.max(...chartValues) + 4,
+                        fontStyle: 'bold',
+                        fontColor: '#000000'
+                    },
+                    gridLines: {
+                        color: 'rgba(0, 0, 0, 0)',
+                        zeroLineColor: '#000000',
+                    },
+                }],
+            },
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'end',
+                    offset: 0,
+                    labels: {
+                        value: {
+                            color: '#000000',
+                            font: {
+                                weight: 'bold',
+                            },
+                        },
+                    },
+                },
+            },
+        }
+    });

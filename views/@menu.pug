@@ -1,0 +1,30 @@
+nav.navbar(role='navigation', aria-label='main navigation')
+    block active
+        -var selected = 'dashboard'
+    -var menu = { 'Dashboard': '/', 'Settings': '/settings' };
+    div.navbar-brand
+        span.navbar-item.header.is-size-5.has-text-weight-bold
+            | WEATHER TTS
+        a.navbar-burger.burger(role='button', aria-label='menu', aria-expanded='false', data-target='navbar')
+            span(aria-hidden='true')
+            span(aria-hidden='true')
+            span(aria-hidden='true')
+    div#navbar.navbar-menu
+        div.navbar-start
+            each val, key in menu
+                a(href=val, title=key, class=selected.toLowerCase() === key.toLowerCase() ? 'is-active navbar-item': 'navbar-item')
+                    | #{key}
+    script.
+        document.addEventListener('DOMContentLoaded', () => {
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            if ($navbarBurgers.length > 0) {
+                $navbarBurgers.forEach(el => {
+                    el.addEventListener('click', () => {
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+                    });
+                });
+            }
+        });

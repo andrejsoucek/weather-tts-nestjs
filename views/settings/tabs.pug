@@ -1,0 +1,38 @@
+script.
+    const TABS = [...document.querySelectorAll('.tabs li')];
+    const CONTENT = [...document.querySelectorAll('[data-tabs-content]')];
+    const CLASS_TOGGLE_TAB = 'is-active';
+    const CLASS_TOGGLE_CONTENT = 'is-hidden';
+
+    function initTabs() {
+        TABS.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                const selected = tab.getAttribute('data-tab');
+                updateActiveTab(tab);
+                updateActiveContent(selected);
+            });
+        });
+    }
+
+    function updateActiveTab(selected) {
+        TABS.forEach(function(tab) {
+            if (tab && tab.classList.contains(CLASS_TOGGLE_TAB)) {
+                tab.classList.remove(CLASS_TOGGLE_TAB);
+            }
+        });
+        selected.classList.add(CLASS_TOGGLE_TAB);
+    }
+
+    function updateActiveContent(selected) {
+        CONTENT.forEach(function(item) {
+            if (item && !item.classList.contains(CLASS_TOGGLE_CONTENT)) {
+                item.classList.add(CLASS_TOGGLE_CONTENT);
+            }
+            const data = item.getAttribute('data-tabs-content');
+            if (data === selected) {
+                item.classList.remove(CLASS_TOGGLE_CONTENT);
+            }
+        });
+    }
+
+    initTabs();
