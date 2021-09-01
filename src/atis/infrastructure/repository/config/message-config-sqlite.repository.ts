@@ -1,5 +1,5 @@
-import { MessageConfigRepository } from '../../domain/repository/config/message-config.repository';
-import { MessageConfig } from '../../domain/entity/config/message-config.entity';
+import { MessageConfigRepository } from '../../../domain/repository/config/message-config.repository';
+import { MessageConfig } from '../../../domain/entity/config/message-config.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

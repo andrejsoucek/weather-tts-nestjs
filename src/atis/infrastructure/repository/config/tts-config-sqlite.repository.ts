@@ -1,5 +1,5 @@
-import { TTSConfigRepository } from '../../domain/repository/config/tts-config.repository';
-import { TTSConfig } from '../../domain/entity/config/tts-config.entity';
+import { TTSConfigRepository } from '../../../domain/repository/config/tts-config.repository';
+import { TTSConfig } from '../../../domain/entity/config/tts-config.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

@@ -1,5 +1,5 @@
-import { WeatherDataConfigRepository } from '../../domain/repository/config/weather-data-config.repository';
-import { WeatherDataConfig } from '../../domain/entity/config/weather-data-config.entity';
+import { WeatherDataConfigRepository } from '../../../domain/repository/config/weather-data-config.repository';
+import { WeatherDataConfig } from '../../../domain/entity/config/weather-data-config.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';

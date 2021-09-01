@@ -1,5 +1,5 @@
-import { GpioConfigRepository } from '../../domain/repository/config/gpio-config.repository';
-import { GpioConfig } from '../../domain/entity/config/gpio-config.entity';
+import { GpioConfigRepository } from '../../../domain/repository/config/gpio-config.repository';
+import { GpioConfig } from '../../../domain/entity/config/gpio-config.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
