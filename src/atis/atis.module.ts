@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AtisUiModule } from './ui/atis-ui.module';
+import { AtisHttpModule } from './ui/http/atis-http.module';
 
 @Module({
-  imports: [AtisUiModule],
+  imports: [AtisHttpModule],
 })
 export class AtisModule {}
