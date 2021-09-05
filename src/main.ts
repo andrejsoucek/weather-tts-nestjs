@@ -9,31 +9,15 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'node_modules', 'bulma', 'css'), {
     prefix: '/bulma',
   });
-  app.useStaticAssets(
-    join(__dirname, '..', 'node_modules', 'chart.js', 'dist'),
-    {
-      prefix: '/chartjs',
-    },
-  );
-  app.useStaticAssets(
-    join(__dirname, '..', 'node_modules', 'chartjs-plugin-datalabels', 'dist'),
-    {
-      prefix: '/chartjs-datalabels',
-    },
-  );
-  app.useStaticAssets(
-    join(
-      __dirname,
-      '..',
-      'node_modules',
-      '@fortawesome',
-      'fontawesome-free',
-      'js',
-    ),
-    {
-      prefix: '/fa',
-    },
-  );
+  app.useStaticAssets(join(__dirname, '..', 'node_modules', 'chart.js', 'dist'), {
+    prefix: '/chartjs',
+  });
+  app.useStaticAssets(join(__dirname, '..', 'node_modules', 'chartjs-plugin-datalabels', 'dist'), {
+    prefix: '/chartjs-datalabels',
+  });
+  app.useStaticAssets(join(__dirname, '..', 'node_modules', '@fortawesome', 'fontawesome-free', 'js'), {
+    prefix: '/fa',
+  });
   await app.listen(3000);
 }
 
