@@ -17,8 +17,8 @@ block content
         ul
             li(data-tab='general').is-active
                 a General settings
-            li(data-tab='google')
-                a Google settings
+            li(data-tab='tts')
+                a TTS settings
             li(data-tab='message')
                 a Message settings
     form(method='POST' action='/save')
@@ -36,14 +36,14 @@ block content
             div.field
                 label(for='realtime-url').label Realtime.txt URL:
                 div.control
-                    input#realtime-url.input(type='text', name='realtime-url', value=config.realtime.url)
+                    input#realtime-url.input(type='text', name='realtime-url', value=config.weatherData.url)
                 p.help URL to fetch the weather from
-        div(data-tabs-content='google').is-hidden
+        div(data-tabs-content='tts').is-hidden
             div.field
-                label(for='google-language').label TTS language:
+                label(for='tts-language').label TTS language:
                 div.control
                     div.select
-                        select#google-language(name='google-language')
+                        select#tts-language(name='tts-language')
                             each lang in languages
                                 option(value=lang.id, selected=lang.selected) #{lang.label}
                 p.help Language of the message
@@ -98,28 +98,28 @@ block content
             div.field
                 label(for='message-wind-calm').label Wind calm:
                 div.control
-                    input#message-wind-calm.input(type='text', name='message-wind-calm', value=config.message.wind.calm)
+                    input#message-wind-calm.input(type='text', name='message-wind-calm', value=config.message.windCalm)
             div.field
                 label(for='message-wind-speed-unit').label Wind speed unit:
                 div.control
-                    input#message-wind-speed-unit.input(type='text', name='message-wind-speed-unit', value=config.message.wind.speedUnits)
+                    input#message-wind-speed-unit.input(type='text', name='message-wind-speed-unit', value=config.message.windSpeedUnit)
             div.field
                 label(for='message-wind-bearing-unit').label Wind bearing unit:
                 div.control
-                    input#message-wind-bearing-unit.input(type='text', name='message-wind-bearing-unit', value=config.message.wind.bearingUnits)
+                    input#message-wind-bearing-unit.input(type='text', name='message-wind-bearing-unit', value=config.message.windBearingUnit)
             div.field
                 label(for='message-wind-gust').label Wind gust:
                 div.control
-                    input#message-wind-gust.input(type='text', name='message-wind-gust', value=config.message.wind.gust)
+                    input#message-wind-gust.input(type='text', name='message-wind-gust', value=config.message.windGust)
             h2.is-size-3 Other units
             div.field
                 label(for='message-temperature-unit').label Temperature unit:
                 div.control
-                    input#message-temperature-unit.input(type='text', name='message-temperature-unit', value=config.message.temperature.units)
+                    input#message-temperature-unit.input(type='text', name='message-temperature-unit', value=config.message.temperatureUnit)
             div.field
                 label(for='message-cloudbase-unit').label Cloudbase unit:
                 div.control
-                    input#message-cloudbase-unit.input(type='text', name='message-cloudbase-unit', value=config.message.cloudbase.units)
+                    input#message-cloudbase-unit.input(type='text', name='message-cloudbase-unit', value=config.message.cloudBaseUnit)
             h2.is-size-3 Runway
             each rwy, index in rwySettings
                 div.field.is-narrow

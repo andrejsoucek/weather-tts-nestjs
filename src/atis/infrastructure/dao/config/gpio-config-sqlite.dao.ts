@@ -1,4 +1,4 @@
-import { GpioConfigRepository } from '../../../domain/repository/config/gpio-config.repository';
+import { GpioConfigDAO } from '../../../domain/dao/config/gpio-config.dao';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
@@ -6,7 +6,7 @@ import { GpioConfigSqlite } from '../../entity/config/gpio-config-sqlite.entity'
 import { GpioConfig } from '../../../domain/entity/config/gpio-config.entity';
 
 @Injectable()
-export class GpioConfigSqliteRepository implements GpioConfigRepository {
+export class GpioConfigSqliteDAO implements GpioConfigDAO {
   constructor(@InjectRepository(GpioConfigSqlite) private readonly repository: Repository<GpioConfigSqlite>) {}
 
   async getGpioConfig(): Promise<GpioConfig> {

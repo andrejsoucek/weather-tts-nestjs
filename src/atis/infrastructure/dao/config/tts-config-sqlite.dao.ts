@@ -1,4 +1,4 @@
-import { TTSConfigRepository } from '../../../domain/repository/config/tts-config.repository';
+import { TTSConfigDAO } from '../../../domain/dao/config/tts-config.dao';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,7 +6,7 @@ import { TTSConfigSqlite } from '../../entity/config/tts-config-sqlite.entity';
 import { TTSConfig } from '../../../domain/entity/config/tts-config.entity';
 
 @Injectable()
-export class TTSConfigSqliteRepository implements TTSConfigRepository {
+export class TTSConfigSqliteDAO implements TTSConfigDAO {
   constructor(@InjectRepository(TTSConfigSqlite) private readonly repository: Repository<TTSConfigSqlite>) {}
 
   async getTTSConfig(): Promise<TTSConfig> {

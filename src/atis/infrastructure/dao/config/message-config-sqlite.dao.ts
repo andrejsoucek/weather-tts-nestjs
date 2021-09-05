@@ -1,12 +1,13 @@
-import { MessageConfigRepository } from '../../../domain/repository/config/message-config.repository';
+import { MessageConfigDAO } from '../../../domain/dao/config/message-config.dao';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MessageConfigSqlite } from '../../entity/config/message-config-sqlite.entity';
 import { MessageConfig } from '../../../domain/entity/config/message-config.entity';
+import { TextCondition } from '../../../domain/valueobject/text-condition.vo';
 
 @Injectable()
-export class MessageConfigSqliteRepository implements MessageConfigRepository {
+export class MessageConfigSqliteDAO implements MessageConfigDAO {
   constructor(@InjectRepository(MessageConfigSqlite) private readonly repository: Repository<MessageConfigSqlite>) {}
 
   async getMessageConfig(): Promise<MessageConfig> {
@@ -21,9 +22,13 @@ export class MessageConfigSqliteRepository implements MessageConfigRepository {
       x.windGust,
       x.temperatureUnit,
       x.cloudBaseUnit,
-      x.rwy,
-      x.circuits,
+      MessageConfigSqliteDAO.mapConditionsFromString(x.rwy),
+      MessageConfigSqliteDAO.mapConditionsFromString(x.circuits),
     );
+  }
+
+  private static mapConditionsFromString(s: string): TextCondition[] {
+    return JSON.parse(s) as TextCondition[];
   }
 
   saveMessageConfig(): Promise<void> {
