@@ -1,27 +1,15 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-@Entity()
 export class MessageConfig {
-  @PrimaryGeneratedColumn()
-  id: number;
-  @Column()
-  template: string;
-  @Column()
-  timezone: string;
-  @Column()
-  windSpeedUnit: string;
-  @Column()
-  windBearingUnit: string;
-  @Column()
-  windCalm: string;
-  @Column()
-  windGust: string;
-  @Column()
-  temperatureUnit: string;
-  @Column()
-  cloudBaseUnit: string;
-  @Column()
-  rwy: string;
-  @Column()
-  circuits: string;
+  public constructor(
+    public readonly id: number,
+    public readonly template: string,
+    public readonly timezone: string,
+    public readonly windSpeedUnit: string,
+    public readonly windBearingUnit: string,
+    public readonly windCalm: string,
+    public readonly windGust: string,
+    public readonly temperatureUnit: string,
+    public readonly cloudBaseUnit: string,
+    public readonly rwy: string,
+    public readonly circuits: string,
+  ) {}
 }

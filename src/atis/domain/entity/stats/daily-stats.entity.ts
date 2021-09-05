@@ -1,11 +1,7 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
-
-@Entity()
 export class DailyStats {
-  @PrimaryColumn()
-  dayTimestamp: number;
-  @Column({ default: 0 })
-  messagesCount: number;
-  @Column({ default: 0 })
-  charactersCount: number;
+  public constructor(
+    public readonly dayTimestamp: number,
+    public readonly messagesCount: number,
+    public readonly charactersCount: number,
+  ) {}
 }

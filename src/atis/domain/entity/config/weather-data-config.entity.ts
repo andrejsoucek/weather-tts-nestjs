@@ -1,9 +1,3 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-Entity();
 export class WeatherDataConfig {
-  @PrimaryGeneratedColumn()
-  id: number;
-  @Column()
-  url: string;
+  constructor(public readonly id: number, public readonly url: string) {}
 }

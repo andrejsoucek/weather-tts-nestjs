@@ -1,9 +1,3 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-
-@Entity()
 export class TTSConfig {
-  @PrimaryGeneratedColumn()
-  id: number;
-  @Column()
-  language: string;
+  public constructor(public readonly id: number, public readonly language: string) {}
 }
