@@ -19,7 +19,7 @@ export class SettingsController {
     rwySettings: any /*TODO*/;
     circuitSettings: any /*TODO*/;
   }> {
-    const config = (await this.queryBus.execute(new GetConfigQuery())) as Config;
+    const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
     const languages = []; // @TODO
     const tzs = []; // @TODO
     const rwySettings = config.message.rwy.map(this.mapConditions);
