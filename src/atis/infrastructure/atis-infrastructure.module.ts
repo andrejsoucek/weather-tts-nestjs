@@ -1,43 +1,49 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GpioConfigSqlite } from './entity/config/gpio-config-sqlite.entity';
-import { GPIO_CONFIG_DAO } from '../domain/dao/config/gpio-config.dao';
-import { MESSAGE_CONFIG_DAO } from '../domain/dao/config/message-config.dao';
-import { TTS_CONFIG_DAO } from '../domain/dao/config/tts-config.dao';
-import { WEATHER_DATA_CONFIG_DAO } from '../domain/dao/config/weather-data-config.dao';
-import { GpioConfigSqliteDAO } from './dao/config/gpio-config-sqlite.dao';
-import { MessageConfigSqliteDAO } from './dao/config/message-config-sqlite.dao';
-import { TTSConfigSqliteDAO } from './dao/config/tts-config-sqlite.dao';
-import { WeatherDataConfigSqliteDAO } from './dao/config/weather-data-config-sqlite.dao';
+import { GET_GPIO_CONFIG_REPOSITORY } from '../domain/repository/config/get-gpio-config.repository';
+import { GET_MESSAGE_CONFIG_REPOSITORY } from '../domain/repository/config/get-message-config.repository';
+import { GET_TTS_CONFIG_REPOSITORY } from '../domain/repository/config/get-tts-config.repository';
+import { GET_WEATHER_DATA_CONFIG_REPOSTIORY } from '../domain/repository/config/get-weather-data-config.repository';
+import { GetGpioConfigSqliteRepository } from './repository/config/get-gpio-config-sqlite.repository';
+import { GetMessageConfigSqliteRepository } from './repository/config/get-message-config-sqlite.repository';
+import { GetTtsConfigSqliteRepository } from './repository/config/get-tts-config-sqlite.repository';
+import { GetWeatherDataConfigSqliteRepository } from './repository/config/get-weather-data-config-sqlite.repository';
 import { MessageConfigSqlite } from './entity/config/message-config-sqlite.entity';
-import { TTSConfigSqlite } from './entity/config/tts-config-sqlite.entity';
+import { TtsConfigSqlite } from './entity/config/tts-config-sqlite.entity';
 import { WeatherDataConfigSqlite } from './entity/config/weather-data-config-sqlite.entity';
 import { DailyStatsSqlite } from './entity/stats/daily-stats-sqlite.entity';
-import { DailyStatsSqliteDAO } from './dao/stats/daily-stats-sqlite.dao';
-import { DAILY_STATS_REPOSITORY } from '../domain/dao/stats/daily-stats.repository';
+import { GetDailyStatsSqliteRepository } from './repository/stats/get-daily-stats-sqlite.repository';
+import { GET_DAILY_STATS_REPOSITORY } from '../domain/repository/stats/get-daily-stats.repository';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       GpioConfigSqlite,
       MessageConfigSqlite,
-      TTSConfigSqlite,
+      TtsConfigSqlite,
       WeatherDataConfigSqlite,
       DailyStatsSqlite,
     ]),
   ],
-  exports: [GPIO_CONFIG_DAO, MESSAGE_CONFIG_DAO, TTS_CONFIG_DAO, WEATHER_DATA_CONFIG_DAO, DAILY_STATS_REPOSITORY],
+  exports: [
+    GET_GPIO_CONFIG_REPOSITORY,
+    GET_MESSAGE_CONFIG_REPOSITORY,
+    GET_TTS_CONFIG_REPOSITORY,
+    GET_WEATHER_DATA_CONFIG_REPOSTIORY,
+    GET_DAILY_STATS_REPOSITORY,
+  ],
   providers: [
-    GpioConfigSqliteDAO,
-    MessageConfigSqliteDAO,
-    TTSConfigSqliteDAO,
-    WeatherDataConfigSqliteDAO,
-    DailyStatsSqliteDAO,
-    { provide: GPIO_CONFIG_DAO, useExisting: GpioConfigSqliteDAO },
-    { provide: MESSAGE_CONFIG_DAO, useExisting: MessageConfigSqliteDAO },
-    { provide: TTS_CONFIG_DAO, useExisting: TTSConfigSqliteDAO },
-    { provide: WEATHER_DATA_CONFIG_DAO, useExisting: WeatherDataConfigSqliteDAO },
-    { provide: DAILY_STATS_REPOSITORY, useExisting: DailyStatsSqliteDAO },
+    GetGpioConfigSqliteRepository,
+    GetMessageConfigSqliteRepository,
+    GetTtsConfigSqliteRepository,
+    GetWeatherDataConfigSqliteRepository,
+    GetDailyStatsSqliteRepository,
+    { provide: GET_GPIO_CONFIG_REPOSITORY, useExisting: GetGpioConfigSqliteRepository },
+    { provide: GET_MESSAGE_CONFIG_REPOSITORY, useExisting: GetMessageConfigSqliteRepository },
+    { provide: GET_TTS_CONFIG_REPOSITORY, useExisting: GetTtsConfigSqliteRepository },
+    { provide: GET_WEATHER_DATA_CONFIG_REPOSTIORY, useExisting: GetWeatherDataConfigSqliteRepository },
+    { provide: GET_DAILY_STATS_REPOSITORY, useExisting: GetDailyStatsSqliteRepository },
   ],
 })
 export class AtisInfrastructureModule {}

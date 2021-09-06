@@ -1,23 +1,29 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { GPIO_CONFIG_DAO, GpioConfigDAO } from '../dao/config/gpio-config.dao';
-import { MESSAGE_CONFIG_DAO, MessageConfigDAO } from '../dao/config/message-config.dao';
-import { TTS_CONFIG_DAO, TTSConfigDAO } from '../dao/config/tts-config.dao';
-import { WEATHER_DATA_CONFIG_DAO, WeatherDataConfigDAO } from '../dao/config/weather-data-config.dao';
+import { GET_GPIO_CONFIG_REPOSITORY, GetGpioConfigRepository } from '../repository/config/get-gpio-config.repository';
+import {
+  GET_MESSAGE_CONFIG_REPOSITORY,
+  GetMessageConfigRepository,
+} from '../repository/config/get-message-config.repository';
+import { GET_TTS_CONFIG_REPOSITORY, GetTtsConfigRepository } from '../repository/config/get-tts-config.repository';
+import {
+  GET_WEATHER_DATA_CONFIG_REPOSTIORY,
+  GetWeatherDataConfigRepository,
+} from '../repository/config/get-weather-data-config.repository';
 import { Config } from '../valueobject/config.vo';
 
 @Injectable()
 export class GetConfigUseCase {
   constructor(
-    @Inject(GPIO_CONFIG_DAO) private readonly gpioConfigDAO: GpioConfigDAO,
-    @Inject(MESSAGE_CONFIG_DAO) private readonly messageConfigDAO: MessageConfigDAO,
-    @Inject(TTS_CONFIG_DAO) private readonly ttsConfigDAO: TTSConfigDAO,
-    @Inject(WEATHER_DATA_CONFIG_DAO) private readonly weatherDataConfigDAO: WeatherDataConfigDAO,
+    @Inject(GET_GPIO_CONFIG_REPOSITORY) private readonly gpioConfigDAO: GetGpioConfigRepository,
+    @Inject(GET_MESSAGE_CONFIG_REPOSITORY) private readonly messageConfigDAO: GetMessageConfigRepository,
+    @Inject(GET_TTS_CONFIG_REPOSITORY) private readonly ttsConfigDAO: GetTtsConfigRepository,
+    @Inject(GET_WEATHER_DATA_CONFIG_REPOSTIORY) private readonly weatherDataConfigDAO: GetWeatherDataConfigRepository,
   ) {}
 
   async get(): Promise<Config> {
     const gpio = await this.gpioConfigDAO.getGpioConfig();
     const message = await this.messageConfigDAO.getMessageConfig();
-    const tts = await this.ttsConfigDAO.getTTSConfig();
+    const tts = await this.ttsConfigDAO.getTtsConfig();
     const weatherData = await this.weatherDataConfigDAO.getWeatherDataConfig();
 
     return new Config(gpio, tts, weatherData, message);
