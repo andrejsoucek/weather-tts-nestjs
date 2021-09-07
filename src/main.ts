@@ -6,6 +6,7 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.setViewEngine('pug');
+  app.setBaseViewsDir('src/atis/ui/http/views');
   app.useStaticAssets(join(__dirname, '..', 'node_modules', 'bulma', 'css'), {
     prefix: '/bulma',
   });

@@ -1,4 +1,4 @@
-extends ../@main.pug
+extends ../@main
 block active
     -var selected = 'dashboard'
 block content
@@ -27,5 +27,5 @@ block content
         div.columns.is-centered.pt-4.pb-4(style={height: '450px'})
             canvas#chart-usage
 
-    include ./chart.pug
+    include chart
 
