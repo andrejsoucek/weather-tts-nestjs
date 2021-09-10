@@ -15,6 +15,8 @@ import { WeatherDataConfigSqlite } from './entity/config/weather-data-config-sql
 import { DailyStatsSqlite } from './entity/stats/daily-stats-sqlite.entity';
 import { GetDailyStatsSqliteRepository } from './repository/stats/get-daily-stats-sqlite.repository';
 import { GET_DAILY_STATS_REPOSITORY } from '../domain/repository/stats/get-daily-stats.repository';
+import { TtsGoogleService } from './service/tts/tts-google.service';
+import { TTS_SERVICE } from '../domain/service/tts/tts.service';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { GET_DAILY_STATS_REPOSITORY } from '../domain/repository/stats/get-daily
     ]),
   ],
   exports: [
+    TTS_SERVICE,
     GET_GPIO_CONFIG_REPOSITORY,
     GET_MESSAGE_CONFIG_REPOSITORY,
     GET_TTS_CONFIG_REPOSITORY,
@@ -39,11 +42,13 @@ import { GET_DAILY_STATS_REPOSITORY } from '../domain/repository/stats/get-daily
     GetTtsConfigSqliteRepository,
     GetWeatherDataConfigSqliteRepository,
     GetDailyStatsSqliteRepository,
+    TtsGoogleService,
     { provide: GET_GPIO_CONFIG_REPOSITORY, useExisting: GetGpioConfigSqliteRepository },
     { provide: GET_MESSAGE_CONFIG_REPOSITORY, useExisting: GetMessageConfigSqliteRepository },
     { provide: GET_TTS_CONFIG_REPOSITORY, useExisting: GetTtsConfigSqliteRepository },
     { provide: GET_WEATHER_DATA_CONFIG_REPOSTIORY, useExisting: GetWeatherDataConfigSqliteRepository },
     { provide: GET_DAILY_STATS_REPOSITORY, useExisting: GetDailyStatsSqliteRepository },
+    { provide: TTS_SERVICE, useExisting: TtsGoogleService },
   ],
 })
 export class AtisInfrastructureModule {}

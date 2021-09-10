@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
+    "@google-cloud/text-to-speech": "^3.3.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/cqrs": "^8.0.0",

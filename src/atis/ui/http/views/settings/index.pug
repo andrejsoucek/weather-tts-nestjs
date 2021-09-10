@@ -44,7 +44,7 @@ block content
                 div.control
                     div.select
                         select#tts-language(name='tts-language')
-                            each lang in languages
+                            each lang in languagesOptions
                                 option(value=lang.id, selected=lang.selected) #{lang.label}
                 p.help Language of the message
         div(data-tabs-content='message').is-hidden
