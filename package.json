@@ -32,6 +32,8 @@
     "bulma": "^0.9.3",
     "chart.js": "^2.9.4",
     "chartjs-plugin-datalabels": "^0.7.0",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
     "moment-timezone": "^0.5.33",
     "pug": "^3.0.2",
     "reflect-metadata": "^0.1.13",
