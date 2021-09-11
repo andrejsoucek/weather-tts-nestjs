@@ -169,7 +169,7 @@ export class ConfigDto {
 
   private createRwyConditions(): RunwayCondition[] {
     return [
-      new RunwayCondition(this.messageRwyComparator1, this.messageRwyValue1, this.messageRwyResult1),
+      new RunwayCondition(this.messageRwyComparator0, this.messageRwyValue0, this.messageRwyResult0),
       new RunwayCondition(this.messageRwyComparator1, this.messageRwyValue1, this.messageRwyResult1),
     ];
   }

@@ -8,6 +8,6 @@ export class RunwayConditionTransformer implements ValueTransformer {
     return plainToClass(RunwayCondition, data as any[]);
   }
   to(value: RunwayCondition[]): string {
-    return value.toString();
+    return JSON.stringify(value);
   }
 }

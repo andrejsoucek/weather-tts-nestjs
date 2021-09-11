@@ -8,6 +8,6 @@ export class CircuitConditionTransformer implements ValueTransformer {
     return plainToClass(CircuitCondition, data);
   }
   to(value: CircuitCondition[]): string {
-    return value.toString();
+    return JSON.stringify(value);
   }
 }
