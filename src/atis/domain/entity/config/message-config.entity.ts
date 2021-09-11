@@ -1,4 +1,4 @@
-import { TextCondition } from '../../valueobject/text-condition.vo';
+import { RunwayCondition } from '../../valueobject/runway-condition.vo';
 
 export class MessageConfig {
   public constructor(
@@ -11,7 +11,7 @@ export class MessageConfig {
     public readonly windGust: string,
     public readonly temperatureUnit: string,
     public readonly cloudBaseUnit: string,
-    public readonly rwy: TextCondition[],
-    public readonly circuits: TextCondition[],
+    public readonly rwy: RunwayCondition[],
+    public readonly circuits: RunwayCondition[],
   ) {}
 }

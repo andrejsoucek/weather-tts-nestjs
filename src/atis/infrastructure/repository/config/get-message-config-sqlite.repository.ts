@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MessageConfigSqlite } from '../../entity/config/message-config-sqlite.entity';
 import { MessageConfig } from '../../../domain/entity/config/message-config.entity';
-import { TextCondition } from '../../../domain/valueobject/text-condition.vo';
 
 @Injectable()
 export class GetMessageConfigSqliteRepository implements GetMessageConfigRepository {
@@ -22,16 +21,8 @@ export class GetMessageConfigSqliteRepository implements GetMessageConfigReposit
       x.windGust,
       x.temperatureUnit,
       x.cloudBaseUnit,
-      GetMessageConfigSqliteRepository.mapConditionsFromString(x.rwy),
-      GetMessageConfigSqliteRepository.mapConditionsFromString(x.circuits),
+      x.rwy,
+      x.circuits,
     );
-  }
-
-  private static mapConditionsFromString(s: string): TextCondition[] {
-    return JSON.parse(s) as TextCondition[];
-  }
-
-  saveMessageConfig(): Promise<void> {
-    return undefined;
   }
 }

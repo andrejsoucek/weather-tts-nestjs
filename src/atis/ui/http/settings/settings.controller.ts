@@ -4,9 +4,10 @@ import { GetConfigQuery } from '../../../application/query/get-config.query';
 import { Config } from '../../../domain/valueobject/config.vo';
 import { SelectOption } from '../select-option.interface';
 import { Comparator } from '../../../domain/enum/comparator.enum';
-import { TextCondition } from '../../../domain/valueobject/text-condition.vo';
+import { RunwayCondition } from '../../../domain/valueobject/runway-condition.vo';
 import { SettingsTemplateProperties } from './settings-template.properties';
 import { GetTtsLanguagesQuery } from '../../../application/query/get-tts-languages.query';
+import { CircuitCondition } from '../../../domain/valueobject/circuit-condition.vo';
 
 @Controller('/settings')
 export class SettingsController {
@@ -24,7 +25,7 @@ export class SettingsController {
     return { config, languagesOptions, tzs, rwySettings, circuitSettings };
   }
 
-  private mapTextConditions = (c: TextCondition) => ({
+  private mapTextConditions = (c: RunwayCondition | CircuitCondition) => ({
     ...c,
     options: Object.values(Comparator).map(this.mapSelectOptions(c.comparator)),
   });
