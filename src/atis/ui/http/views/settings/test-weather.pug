@@ -1,0 +1,19 @@
+script.
+    const button = document.getElementById('test-weather');
+    button.addEventListener('click', () => {
+        button.classList.add('is-loading');
+        const url = document.getElementById('realtime-url');
+        fetch(`/settings/weatherTest?url=${url.value}`)
+            .then(response => {
+                button.classList.remove('is-loading');
+                response.json()
+                    .then((data) => {
+                        if (response.status === 200) {
+                            alert('Weather data available!');
+                        } else {
+                            alert(`Weather data not available! Error: ${data.message}`);
+                        }
+                    });
+            })
+
+    })

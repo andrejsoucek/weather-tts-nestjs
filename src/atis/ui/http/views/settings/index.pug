@@ -35,9 +35,13 @@ block content
                 p.help Raspberry GPIO pin number which will handle the PTT
             div.field
                 label(for='realtime-url').label Realtime.txt URL:
-                div.control
-                    input#realtime-url.input(type='text', name='realtime-url', value=config.weatherData.url)
+                div.field.has-addons
+                    p.control.container
+                        input#realtime-url.input(type='text', name='realtime-url', value=config.weatherData.url)
+                    p.control.has-addons
+                        button#test-weather.button(type='button') Test weather data availability
                 p.help URL to fetch the weather from
+            include test-weather
         div(data-tabs-content='tts').is-hidden
             div.field
                 label(for='tts-language').label TTS language:
