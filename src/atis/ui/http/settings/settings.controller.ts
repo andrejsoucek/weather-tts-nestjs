@@ -71,8 +71,9 @@ export class SettingsController {
     }
   }
 
-  @Get('previewMessage')
-  async getComposedMessage(): Promise<{ message: string }> {
+  @Post('previewMessage')
+  @HttpCode(200)
+  async getComposedMessage(@Body('messageTemplate') messageTemplate: string): Promise<{ message: string }> {
     try {
       const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
       const weather = await this.queryBus.execute<GetCurrentWeatherQuery, Weather>(
@@ -80,7 +81,7 @@ export class SettingsController {
       );
       return {
         message: await this.commandBus.execute<ComposeMessageCommand, string>(
-          new ComposeMessageCommand(weather, config.message),
+          new ComposeMessageCommand(weather, Object.assign(config.message, { template: messageTemplate })),
         ),
       };
     } catch (e) {

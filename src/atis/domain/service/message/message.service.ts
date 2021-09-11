@@ -18,9 +18,7 @@ export class MessageService {
   constructor(@Inject('MomentTimezone') private readonly moment: MomentTimezone) {}
 
   public composeMessage(weather: Weather, cfg: MessageConfig): string {
-    const { template } = cfg;
-
-    const replaced = template
+    const replaced = cfg.template
       .replace('<#TIME>', this.formatTime(weather.time, weather.date, cfg.timezone))
       .replace(
         '<#WIND>',

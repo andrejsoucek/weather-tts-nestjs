@@ -3,7 +3,14 @@ script.
         const button = document.getElementById('preview-message');
         button.addEventListener('click', () => {
             button.classList.add('is-loading');
-            fetch(`/settings/previewMessage`)
+            const messageTemplate = document.getElementById('message-template');
+            fetch(`/settings/previewMessage`, {
+                method: 'POST',
+                body: JSON.stringify({ messageTemplate: messageTemplate.value}),
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
                 .then(response => {
                     button.classList.remove('is-loading');
                     response.json()
