@@ -2,7 +2,7 @@ import { WeatherParser } from '../../../../../domain/service/weather/weather.par
 import { Weather } from '../../../../../domain/valueobject/weather.vo';
 import { Injectable } from '@nestjs/common';
 import { WeatherRealtimeDto } from './weather-realtime.dto';
-import {UnexpectedWeatherFormatException} from "../../../../../domain/exception/unexpected-weather-format.exception";
+import { UnexpectedWeatherFormatException } from '../../../../../domain/exception/unexpected-weather-format.exception';
 
 @Injectable()
 export class WeatherRealtimeTxtParser implements WeatherParser {
