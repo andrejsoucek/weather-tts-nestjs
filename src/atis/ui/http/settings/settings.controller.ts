@@ -1,5 +1,7 @@
 import {
+  BadGatewayException,
   BadRequestException,
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -9,7 +11,7 @@ import {
   Query,
   Render,
 } from '@nestjs/common';
-import { QueryBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GetConfigQuery } from '../../../application/query/get-config.query';
 import { Config } from '../../../domain/valueobject/config.vo';
 import { SelectOption } from '../select-option.interface';
@@ -23,11 +25,14 @@ import { GetCurrentWeatherQuery } from '../../../application/query/get-current-w
 import { MomentTimezone } from 'moment-timezone';
 import { WeatherNotFoundException } from '../../../domain/exception/weather-not-found.exception';
 import { UnexpectedWeatherFormatException } from '../../../domain/exception/unexpected-weather-format.exception';
+import { ConfigDto } from '../dto/config.dto';
+import {SaveConfigCommand} from "../../../application/command/save-config.command";
 
 @Controller('/settings')
 export class SettingsController {
   constructor(
     private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
     @Inject('MomentTimezone') private readonly momentTimezone: MomentTimezone,
   ) {}
 
@@ -54,7 +59,14 @@ export class SettingsController {
       if (e instanceof UnexpectedWeatherFormatException) {
         throw new BadRequestException('Weather data could not be parsed from the provided URL.');
       }
+      throw new BadGatewayException('Weather data could not be parsed from the provided URL.');
     }
+  }
+
+  @Post('/save')
+  @HttpCode(204)
+  async saveConfiguration(@Body() configDto: ConfigDto): Promise<void> {
+    await this.commandBus.execute(new SaveConfigCommand(configDto.toValueObject()));
   }
 
   private mapTextConditions = (c: RunwayCondition | CircuitCondition) => ({

@@ -22,6 +22,14 @@ import { WeatherHttpProvider } from './service/weather/provider/http/weather-htt
 import { WeatherRealtimeTxtParser } from './service/weather/parser/realtimetxt/weather-realtime-txt.parser';
 import { WEATHER_PROVIDER } from '../domain/service/weather/weather.provider';
 import { WEATHER_PARSER } from '../domain/service/weather/weather.parser';
+import { SAVE_GPIO_CONFIG_REPOSITORY } from '../domain/repository/config/save-gpio-config.repository';
+import { SAVE_MESSAGE_CONFIG_REPOSITORY } from '../domain/repository/config/save-message-config.repository';
+import { SAVE_TTS_CONFIG_REPOSITORY } from '../domain/repository/config/save-tts-config.repository';
+import { SAVE_WEATHER_DATA_CONFIG_REPOSTIORY } from '../domain/repository/config/save-weather-data-config.repository';
+import { SaveGpioConfigSqliteRepository } from './repository/config/save-gpio-config-sqlite.repository';
+import { SaveMessageConfigSqliteRepository } from './repository/config/save-message-config-sqlite.repository';
+import { SaveTtsConfigSqliteRepository } from './repository/config/save-tts-config-sqlite.repository';
+import { SaveWeatherDataConfigSqliteRepository } from './repository/config/save-weather-data-config-sqlite.repository';
 
 @Module({
   imports: [
@@ -42,6 +50,10 @@ import { WEATHER_PARSER } from '../domain/service/weather/weather.parser';
     GET_TTS_CONFIG_REPOSITORY,
     GET_WEATHER_DATA_CONFIG_REPOSTIORY,
     GET_DAILY_STATS_REPOSITORY,
+    SAVE_GPIO_CONFIG_REPOSITORY,
+    SAVE_MESSAGE_CONFIG_REPOSITORY,
+    SAVE_TTS_CONFIG_REPOSITORY,
+    SAVE_WEATHER_DATA_CONFIG_REPOSTIORY,
   ],
   providers: [
     WeatherHttpProvider,
@@ -51,6 +63,10 @@ import { WEATHER_PARSER } from '../domain/service/weather/weather.parser';
     GetTtsConfigSqliteRepository,
     GetWeatherDataConfigSqliteRepository,
     GetDailyStatsSqliteRepository,
+    SaveGpioConfigSqliteRepository,
+    SaveMessageConfigSqliteRepository,
+    SaveTtsConfigSqliteRepository,
+    SaveWeatherDataConfigSqliteRepository,
     TtsGoogleService,
     { provide: TTS_SERVICE, useExisting: TtsGoogleService },
     { provide: WEATHER_PROVIDER, useExisting: WeatherHttpProvider },
@@ -60,6 +76,10 @@ import { WEATHER_PARSER } from '../domain/service/weather/weather.parser';
     { provide: GET_TTS_CONFIG_REPOSITORY, useExisting: GetTtsConfigSqliteRepository },
     { provide: GET_WEATHER_DATA_CONFIG_REPOSTIORY, useExisting: GetWeatherDataConfigSqliteRepository },
     { provide: GET_DAILY_STATS_REPOSITORY, useExisting: GetDailyStatsSqliteRepository },
+    { provide: SAVE_GPIO_CONFIG_REPOSITORY, useExisting: SaveGpioConfigSqliteRepository },
+    { provide: SAVE_MESSAGE_CONFIG_REPOSITORY, useExisting: SaveMessageConfigSqliteRepository },
+    { provide: SAVE_TTS_CONFIG_REPOSITORY, useExisting: SaveTtsConfigSqliteRepository },
+    { provide: SAVE_WEATHER_DATA_CONFIG_REPOSTIORY, useExisting: SaveWeatherDataConfigSqliteRepository },
   ],
 })
 export class AtisInfrastructureModule {}

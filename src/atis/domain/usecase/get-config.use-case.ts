@@ -14,17 +14,18 @@ import { Config } from '../valueobject/config.vo';
 @Injectable()
 export class GetConfigUseCase {
   constructor(
-    @Inject(GET_GPIO_CONFIG_REPOSITORY) private readonly gpioConfigDAO: GetGpioConfigRepository,
-    @Inject(GET_MESSAGE_CONFIG_REPOSITORY) private readonly messageConfigDAO: GetMessageConfigRepository,
-    @Inject(GET_TTS_CONFIG_REPOSITORY) private readonly ttsConfigDAO: GetTtsConfigRepository,
-    @Inject(GET_WEATHER_DATA_CONFIG_REPOSTIORY) private readonly weatherDataConfigDAO: GetWeatherDataConfigRepository,
+    @Inject(GET_GPIO_CONFIG_REPOSITORY) private readonly gpioConfigRepository: GetGpioConfigRepository,
+    @Inject(GET_MESSAGE_CONFIG_REPOSITORY) private readonly messageConfigRepository: GetMessageConfigRepository,
+    @Inject(GET_TTS_CONFIG_REPOSITORY) private readonly ttsConfigRepository: GetTtsConfigRepository,
+    @Inject(GET_WEATHER_DATA_CONFIG_REPOSTIORY)
+    private readonly weatherDataConfigRepository: GetWeatherDataConfigRepository,
   ) {}
 
   async get(): Promise<Config> {
-    const gpio = await this.gpioConfigDAO.getGpioConfig();
-    const message = await this.messageConfigDAO.getMessageConfig();
-    const tts = await this.ttsConfigDAO.getTtsConfig();
-    const weatherData = await this.weatherDataConfigDAO.getWeatherDataConfig();
+    const gpio = await this.gpioConfigRepository.getGpioConfig();
+    const message = await this.messageConfigRepository.getMessageConfig();
+    const tts = await this.ttsConfigRepository.getTtsConfig();
+    const weatherData = await this.weatherDataConfigRepository.getWeatherDataConfig();
 
     return new Config(gpio, tts, weatherData, message);
   }

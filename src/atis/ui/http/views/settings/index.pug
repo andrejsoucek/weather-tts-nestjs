@@ -21,8 +21,9 @@ block content
                 a TTS settings
             li(data-tab='message')
                 a Message settings
-    form(method='POST' action='/save')
+    form(method='POST' action='/settings/save')
         div(data-tabs-content='general')
+            input#gpio-config-id.input(type='hidden', name='gpio-config-id', value=config.gpio.id)
             div.field
                 label(for='gpio-input').label GPIO Input PIN Number:
                 div.control
@@ -34,6 +35,7 @@ block content
                     input#gpio-output.input(type='number', name='gpio-output', value=config.gpio.output)
                 p.help Raspberry GPIO pin number which will handle the PTT
             div.field
+                input#weather-data-config-id.input(type='hidden', name='weather-data-config-id', value=config.weatherData.id)
                 label(for='realtime-url').label Realtime.txt URL:
                 div.field.has-addons
                     p.control.container
@@ -43,6 +45,7 @@ block content
                 p.help URL to fetch the weather from
             include test-weather
         div(data-tabs-content='tts').is-hidden
+            input#tts-config-id.input(type='hidden', name='tts-config-id', value=config.tts.id)
             div.field
                 label(for='tts-language').label TTS language:
                 div.control
@@ -52,6 +55,7 @@ block content
                                 option(value=lang.id, selected=lang.selected) #{lang.label}
                 p.help Language of the message
         div(data-tabs-content='message').is-hidden
+            input#message-config-id.input(type='hidden', name='message-config-id', value=config.message.id)
             h2.is-size-3 Message
             div.field
                 label(for='message-template').label Message template:
