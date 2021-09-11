@@ -1,22 +1,21 @@
 script.
-    const initTestWeather = () => {
-        const button = document.getElementById('test-weather');
+    const initPreviewMessage = () => {
+        const button = document.getElementById('preview-message');
         button.addEventListener('click', () => {
             button.classList.add('is-loading');
-            const url = document.getElementById('realtime-url');
-            fetch(`/settings/weatherTest?url=${url.value}`)
+            fetch(`/settings/previewMessage`)
                 .then(response => {
                     button.classList.remove('is-loading');
-                    console.log(response);
                     response.json()
                         .then((data) => {
                             if (response.status === 200) {
-                                alert('Weather data available!');
+                                const preview = document.getElementById('message-preview')
+                                preview.value = data.message.replace(/<[^>]*>?/gmi, '');
                             } else {
-                                alert(`Weather data not available! Error: ${data.message}`);
+                                alert(`Preview not available! Error: ${data.message}`);
                             }
                         });
                 })
         })
     }
-    initTestWeather()
+    initPreviewMessage();

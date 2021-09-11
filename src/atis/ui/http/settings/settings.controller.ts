@@ -6,6 +6,7 @@ import {
   Get,
   HttpCode,
   Inject,
+  InternalServerErrorException,
   NotFoundException,
   Post,
   Query,
@@ -26,7 +27,8 @@ import { MomentTimezone } from 'moment-timezone';
 import { WeatherNotFoundException } from '../../../domain/exception/weather-not-found.exception';
 import { UnexpectedWeatherFormatException } from '../../../domain/exception/unexpected-weather-format.exception';
 import { ConfigDto } from '../dto/config.dto';
-import {SaveConfigCommand} from "../../../application/command/save-config.command";
+import { SaveConfigCommand } from '../../../application/command/save-config.command';
+import { ComposeMessageCommand } from '../../../application/command/compose-message.command';
 
 @Controller('/settings')
 export class SettingsController {
@@ -48,6 +50,12 @@ export class SettingsController {
     return { config, languagesOptions, tzs, rwySettings, circuitSettings };
   }
 
+  @Post('/save')
+  @HttpCode(204)
+  async saveConfiguration(@Body() configDto: ConfigDto): Promise<void> {
+    await this.commandBus.execute(new SaveConfigCommand(configDto.toValueObject()));
+  }
+
   @Get('weatherTest')
   async getWeatherForTest(@Query('url') url: string): Promise<Weather> {
     try {
@@ -59,14 +67,31 @@ export class SettingsController {
       if (e instanceof UnexpectedWeatherFormatException) {
         throw new BadRequestException('Weather data could not be parsed from the provided URL.');
       }
-      throw new BadGatewayException('Weather data could not be parsed from the provided URL.');
+      throw e;
     }
   }
 
-  @Post('/save')
-  @HttpCode(204)
-  async saveConfiguration(@Body() configDto: ConfigDto): Promise<void> {
-    await this.commandBus.execute(new SaveConfigCommand(configDto.toValueObject()));
+  @Get('previewMessage')
+  async getComposedMessage(): Promise<{ message: string }> {
+    try {
+      const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
+      const weather = await this.queryBus.execute<GetCurrentWeatherQuery, Weather>(
+        new GetCurrentWeatherQuery(config.weatherData.url),
+      );
+      return {
+        message: await this.commandBus.execute<ComposeMessageCommand, string>(
+          new ComposeMessageCommand(weather, config.message),
+        ),
+      };
+    } catch (e) {
+      if (e instanceof WeatherNotFoundException) {
+        throw new NotFoundException('Weather data not found on the provided URL.');
+      }
+      if (e instanceof UnexpectedWeatherFormatException) {
+        throw new BadRequestException('Weather data could not be parsed from the provided URL.');
+      }
+      throw e;
+    }
   }
 
   private mapTextConditions = (c: RunwayCondition | CircuitCondition) => ({

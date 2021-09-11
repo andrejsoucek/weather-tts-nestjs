@@ -40,7 +40,7 @@ block content
                 div.field.has-addons
                     p.control.container
                         input#realtime-url.input(type='text', name='realtime-url', value=config.weatherData.url)
-                    p.control.has-addons
+                    p.control
                         button#test-weather.button(type='button') Test weather data availability
                 p.help URL to fetch the weather from
             include test-weather
@@ -59,9 +59,18 @@ block content
             h2.is-size-3 Message
             div.field
                 label(for='message-template').label Message template:
-                div.control
-                    textarea#message-template(name='message-template', rows='6', cols='66').textarea
-                        | #{config.message.template}
+                div.columns.my-1
+                    div.is-half
+                        div.control
+                            textarea#message-template(name='message-template', rows='6', cols='66', style='resize:none').textarea
+                                | #{config.message.template}
+                    div.is-half
+                        div.field.has-addons
+                            div.level
+                                button#preview-message.button.mx-1(type='button') Preview >
+                            div.control
+                                textarea#message-preview(name='message-preview', rows='6', cols='66', style='resize:none', disabled='disabled').textarea
+            include preview-message
             h3.is-size-4 Placeholders
             ul
                 li
