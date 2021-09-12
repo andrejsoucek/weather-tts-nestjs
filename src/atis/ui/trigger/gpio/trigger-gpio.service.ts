@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  LoggerService,
   NotFoundException,
   OnApplicationBootstrap,
   OnApplicationShutdown,
@@ -20,19 +21,23 @@ import { UnexpectedWeatherFormatException } from '../../../domain/exception/unex
 export class TriggerGpioService implements TriggerService, OnApplicationBootstrap, OnApplicationShutdown {
   private gpioInput: Gpio | undefined;
   private gpioOutput: Gpio | undefined;
-  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+    private readonly logger: LoggerService,
+  ) {}
 
   async listen(): Promise<void> {
-    console.log('GPIO trigger running. Press enter to pull the trigger.');
     try {
       const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
 
       this.gpioInput = new Gpio(config.gpio.input, 'in', 'falling');
       this.gpioOutput = new Gpio(config.gpio.output, 'out', 'none', { debounceTimeout: 10 });
+      this.logger.log(`GPIO trigger running. Waiting for signal on pin ${this.gpioInput}.`);
       this.gpioInput.watch(async (err, value) => {
-        console.log(`Received signal: ${value}`);
+        this.logger.debug(`Received signal: ${value}`);
         if (err) {
-          console.log(err);
+          this.logger.error(err);
           return;
         }
 
@@ -43,7 +48,7 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
         const message = await this.commandBus.execute<ComposeMessageCommand, string>(
           new ComposeMessageCommand(weather, config.message),
         );
-        console.log(message);
+        this.logger.debug(message);
       });
     } catch (e) {
       if (e instanceof WeatherNotFoundException) {

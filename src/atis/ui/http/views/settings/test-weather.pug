@@ -7,7 +7,6 @@ script.
             fetch(`/settings/weatherTest?url=${url.value}`)
                 .then(response => {
                     button.classList.remove('is-loading');
-                    console.log(response);
                     response.json()
                         .then((data) => {
                             if (response.status === 200) {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { TRIGGER_SERVICE } from '../../domain/service/trigger/trigger.service';
 import { TriggerManualService } from './stdin/trigger-manual.service';
 import { TriggerGpioService } from './gpio/trigger-gpio.service';
@@ -10,7 +10,13 @@ const triggerProvider = {
 };
 
 @Module({
-  providers: [triggerProvider],
+  providers: [
+    triggerProvider,
+    {
+      provide: 'TriggerLogger',
+      useFactory: () => new Logger('TriggerService'),
+    },
+  ],
   imports: [CqrsModule],
 })
 export class TriggerModule {}

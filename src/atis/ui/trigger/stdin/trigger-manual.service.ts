@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
+  LoggerService,
   NotFoundException,
   OnApplicationBootstrap,
   OnApplicationShutdown,
@@ -17,11 +19,15 @@ import { UnexpectedWeatherFormatException } from '../../../domain/exception/unex
 
 @Injectable()
 export class TriggerManualService implements TriggerService, OnApplicationBootstrap, OnApplicationShutdown {
-  constructor(private readonly queryBus: QueryBus, private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly queryBus: QueryBus,
+    private readonly commandBus: CommandBus,
+    @Inject('TriggerLogger') private readonly logger: LoggerService,
+  ) {}
   private stdinListener: NodeJS.ReadStream | undefined;
 
   listen(): void {
-    console.log('Manual trigger running. Press enter to pull the trigger.');
+    this.logger.log('Manual trigger running. Press enter to pull the trigger.');
     this.stdinListener = process.stdin.on('data', async () => {
       try {
         const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
@@ -31,7 +37,7 @@ export class TriggerManualService implements TriggerService, OnApplicationBootst
         const message = await this.commandBus.execute<ComposeMessageCommand, string>(
           new ComposeMessageCommand(weather, config.message),
         );
-        console.log(message);
+        this.logger.debug(message);
       } catch (e) {
         if (e instanceof WeatherNotFoundException) {
           throw new NotFoundException('Weather data not found on the provided URL.');
