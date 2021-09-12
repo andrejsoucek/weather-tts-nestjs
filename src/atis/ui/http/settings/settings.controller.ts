@@ -1,12 +1,10 @@
 import {
-  BadGatewayException,
   BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
   Inject,
-  InternalServerErrorException,
   NotFoundException,
   Post,
   Query,

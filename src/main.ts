@@ -11,6 +11,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
+
   app.setViewEngine('pug');
   app.setBaseViewsDir('src/atis/ui/http/views');
   app.useStaticAssets(join(__dirname, '..', 'node_modules', 'bulma', 'css'), {
@@ -25,6 +26,8 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'node_modules', '@fortawesome', 'fontawesome-free', 'js'), {
     prefix: '/fa',
   });
+
+  app.enableShutdownHooks();
   await app.listen(3000);
 }
 
