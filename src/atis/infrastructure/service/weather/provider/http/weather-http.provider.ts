@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Weather } from '../../../../../domain/valueobject/weather.vo';
 import { HttpService } from '@nestjs/axios';
 import { WEATHER_PARSER, WeatherParser } from '../../../../../domain/service/weather/weather.parser';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { WeatherNotFoundException } from '../../../../../domain/exception/weather-not-found.exception';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class WeatherHttpProvider implements WeatherProvider {
 
   async fetchCurrentWeather(url: string): Promise<Weather> {
     try {
-      const response = await firstValueFrom(this.httpService.get<string>(url));
+      const response = await lastValueFrom(this.httpService.get<string>(url));
 
       return this.weatherParser.parse(response.data);
     } catch (e) {
