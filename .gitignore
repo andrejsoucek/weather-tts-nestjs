@@ -36,3 +36,7 @@ lerna-debug.log*
 
 # DB
 *.sqlite
+
+# TTS
+auth.json
+output.mp3

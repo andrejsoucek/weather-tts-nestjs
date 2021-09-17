@@ -7,6 +7,8 @@ import { SaveConfigUseCase } from './usecase/save-config.use-case';
 import moment = require('moment-timezone');
 import { ComposeMessageUseCase } from './usecase/compose-message.use-case';
 import { MessageService } from './service/message/message.service';
+import { SynthesizeUseCase } from './usecase/synthesize.use-case';
+import { PlaySoundUseCase } from './usecase/play-sound.use-case';
 
 @Module({
   imports: [AtisInfrastructureModule],
@@ -17,6 +19,8 @@ import { MessageService } from './service/message/message.service';
     GetCurrentWeatherUseCase,
     SaveConfigUseCase,
     ComposeMessageUseCase,
+    SynthesizeUseCase,
+    PlaySoundUseCase,
     {
       provide: 'MomentTimezone',
       useValue: moment.tz,
@@ -29,6 +33,8 @@ import { MessageService } from './service/message/message.service';
     SaveConfigUseCase,
     GetConfigUseCase,
     ComposeMessageUseCase,
+    SynthesizeUseCase,
+    PlaySoundUseCase,
   ],
 })
 export class AtisDomainModule {}

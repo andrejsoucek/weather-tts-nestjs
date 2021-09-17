@@ -30,6 +30,9 @@ import { SaveGpioConfigSqliteRepository } from './repository/config/save-gpio-co
 import { SaveMessageConfigSqliteRepository } from './repository/config/save-message-config-sqlite.repository';
 import { SaveTtsConfigSqliteRepository } from './repository/config/save-tts-config-sqlite.repository';
 import { SaveWeatherDataConfigSqliteRepository } from './repository/config/save-weather-data-config-sqlite.repository';
+import { TextToSpeechClient } from '@google-cloud/text-to-speech/build/src/v1';
+import { PLAYER_SERVICE } from '../domain/service/tts/player.service';
+import { PlaysoundPlayerService } from './service/tts/playsound-player.service';
 
 @Module({
   imports: [
@@ -43,6 +46,7 @@ import { SaveWeatherDataConfigSqliteRepository } from './repository/config/save-
     ]),
   ],
   exports: [
+    PLAYER_SERVICE,
     TTS_SERVICE,
     WEATHER_PROVIDER,
     GET_GPIO_CONFIG_REPOSITORY,
@@ -68,6 +72,9 @@ import { SaveWeatherDataConfigSqliteRepository } from './repository/config/save-
     SaveTtsConfigSqliteRepository,
     SaveWeatherDataConfigSqliteRepository,
     TtsGoogleService,
+    PlaysoundPlayerService,
+    { provide: 'GoogleTTSClient', useFactory: () => new TextToSpeechClient() },
+    { provide: PLAYER_SERVICE, useExisting: PlaysoundPlayerService },
     { provide: TTS_SERVICE, useExisting: TtsGoogleService },
     { provide: WEATHER_PROVIDER, useExisting: WeatherHttpProvider },
     { provide: WEATHER_PARSER, useExisting: WeatherRealtimeTxtParser },
