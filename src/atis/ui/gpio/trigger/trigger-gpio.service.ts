@@ -1,6 +1,5 @@
 import {
-  BadRequestException,
-  Inject,
+  BadRequestException, Inject,
   Injectable,
   LoggerService,
   NotFoundException,
@@ -9,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { TriggerService } from '../../../domain/service/trigger/trigger.service';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { Gpio } from 'onoff';
 import { GetConfigQuery } from '../../../application/query/get-config.query';
 import { Config } from '../../../domain/valueobject/config.vo';
 import { GetCurrentWeatherQuery } from '../../../application/query/get-current-weather.query';
@@ -18,42 +18,52 @@ import { WeatherNotFoundException } from '../../../domain/exception/weather-not-
 import { UnexpectedWeatherFormatException } from '../../../domain/exception/unexpected-weather-format.exception';
 
 @Injectable()
-export class TriggerManualService implements TriggerService, OnApplicationBootstrap, OnApplicationShutdown {
+export class TriggerGpioService implements TriggerService, OnApplicationBootstrap, OnApplicationShutdown {
+  private gpioInput: Gpio | undefined;
+  private gpioOutput: Gpio | undefined;
   constructor(
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
-    @Inject('TriggerLogger') private readonly logger: LoggerService,
+    @Inject('GpioTriggerLogger') private readonly logger: LoggerService,
   ) {}
-  private stdinListener: NodeJS.ReadStream | undefined;
 
-  listen(): void {
-    this.logger.log('Manual trigger running. Press enter to pull the trigger.');
-    this.stdinListener = process.stdin.on('data', async () => {
-      try {
-        const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
+  async listen(): Promise<void> {
+    try {
+      const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
+
+      this.gpioInput = new Gpio(config.gpio.input, 'in', 'falling');
+      this.gpioOutput = new Gpio(config.gpio.output, 'out', 'none', { debounceTimeout: 10 });
+      this.logger.log(`GPIO trigger running. Waiting for signal on pin ${this.gpioInput}.`);
+      this.gpioInput.watch(async (err, value) => {
+        this.logger.debug(`Received signal: ${value}`);
+        if (err) {
+          this.logger.error(err);
+          return;
+        }
+
         const weather = await this.queryBus.execute<GetCurrentWeatherQuery, Weather>(
           new GetCurrentWeatherQuery(config.weatherData.url),
         );
+
         const message = await this.commandBus.execute<ComposeMessageCommand, string>(
           new ComposeMessageCommand(weather, config.message),
         );
         this.logger.debug(message);
-      } catch (e) {
-        if (e instanceof WeatherNotFoundException) {
-          throw new NotFoundException('Weather data not found on the provided URL.');
-        }
-        if (e instanceof UnexpectedWeatherFormatException) {
-          throw new BadRequestException('Weather data could not be parsed from the provided URL.');
-        }
-        throw e;
+      });
+    } catch (e) {
+      if (e instanceof WeatherNotFoundException) {
+        throw new NotFoundException('Weather data not found on the provided URL.');
       }
-    });
+      if (e instanceof UnexpectedWeatherFormatException) {
+        throw new BadRequestException('Weather data could not be parsed from the provided URL.');
+      }
+      throw e;
+    }
   }
 
   unlisten(): void {
-    if (this.stdinListener) {
-      this.stdinListener.removeAllListeners();
-    }
+    this.gpioInput.unexport();
+    this.gpioOutput.unexport();
   }
 
   onApplicationBootstrap(): void {
