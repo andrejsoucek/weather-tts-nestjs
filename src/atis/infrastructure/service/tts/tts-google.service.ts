@@ -10,8 +10,6 @@ import * as path from 'path';
 @Injectable()
 export class TtsGoogleService implements TtsService {
   constructor(@Inject('GoogleTTSClient') private readonly ttsClient: v1.TextToSpeechClient) {
-    console.log('hi');
-    console.log(path.join(process.cwd(), 'auth.json'));
     process.env.GOOGLE_APPLICATION_CREDENTIALS = path.join(process.cwd(), 'auth.json');
   }
 
