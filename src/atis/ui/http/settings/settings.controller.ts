@@ -16,7 +16,7 @@ import { Config } from '../../../domain/valueobject/config.vo';
 import { SelectOption } from '../select-option.interface';
 import { Comparator } from '../../../domain/enum/comparator.enum';
 import { RunwayCondition } from '../../../domain/valueobject/runway-condition.vo';
-import { SettingsTemplateProperties } from './settings-template.properties';
+import { SettingsTemplateProperties } from './settings.template-properties';
 import { GetTtsLanguagesQuery } from '../../../application/query/get-tts-languages.query';
 import { CircuitCondition } from '../../../domain/valueobject/circuit-condition.vo';
 import { Weather } from '../../../domain/valueobject/weather.vo';

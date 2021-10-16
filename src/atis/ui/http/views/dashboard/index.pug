@@ -3,6 +3,7 @@ block active
     -var selected = 'dashboard'
 block content
     div.box.mt-5
+        p.heading.has-text-centered Usage this month
         nav.level
             div.level-item.has-text-centered
                 div
@@ -23,9 +24,13 @@ block content
 
     div.box
         div.columns.is-centered.pt-4.pb-4
-            p.heading Daily usage
+            p.heading
+                if chartLabels.length
+                    | Daily statistics
+                else
+                    | No data
         div.columns.is-centered.pt-4.pb-4(style={height: '450px'})
-            canvas#chart-usage
-
-    include chart
+            if chartLabels.length
+                canvas#chart-usage
+                include chart
 
