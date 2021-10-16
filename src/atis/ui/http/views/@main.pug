@@ -21,8 +21,10 @@ html(lang='en')
                 |  by
                 |
                 a(href='https://github.com/andrejsoucek', target='_blank') Andrej Souček
-                |  &copy; 2020
-
+                |  &copy;
+                span#copyright-year
+        script.
+            document.getElementById('copyright-year').innerText = ' 2020 - ' + new Date().getFullYear();
         style.
             body {
                 display: flex;
