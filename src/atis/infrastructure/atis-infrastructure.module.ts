@@ -33,6 +33,8 @@ import { SaveWeatherDataConfigSqliteRepository } from './repository/config/save-
 import { TextToSpeechClient } from '@google-cloud/text-to-speech/build/src/v1';
 import { PLAYER_SERVICE } from '../domain/service/tts/player.service';
 import { PlaysoundPlayerService } from './service/tts/playsound-player.service';
+import { UpdateDailyStatsSqliteRepository } from './repository/stats/update-daily-stats-sqlite.repository';
+import { UPDATE_DAILY_STATS_REPOSITORY } from '../domain/repository/stats/update-daily-stats.repository';
 
 @Module({
   imports: [
@@ -58,6 +60,7 @@ import { PlaysoundPlayerService } from './service/tts/playsound-player.service';
     SAVE_MESSAGE_CONFIG_REPOSITORY,
     SAVE_TTS_CONFIG_REPOSITORY,
     SAVE_WEATHER_DATA_CONFIG_REPOSTIORY,
+    UPDATE_DAILY_STATS_REPOSITORY,
   ],
   providers: [
     WeatherHttpProvider,
@@ -73,6 +76,7 @@ import { PlaysoundPlayerService } from './service/tts/playsound-player.service';
     SaveWeatherDataConfigSqliteRepository,
     TtsGoogleService,
     PlaysoundPlayerService,
+    UpdateDailyStatsSqliteRepository,
     { provide: 'GoogleTTSClient', useFactory: () => new TextToSpeechClient() },
     { provide: PLAYER_SERVICE, useExisting: PlaysoundPlayerService },
     { provide: TTS_SERVICE, useExisting: TtsGoogleService },
@@ -87,6 +91,7 @@ import { PlaysoundPlayerService } from './service/tts/playsound-player.service';
     { provide: SAVE_MESSAGE_CONFIG_REPOSITORY, useExisting: SaveMessageConfigSqliteRepository },
     { provide: SAVE_TTS_CONFIG_REPOSITORY, useExisting: SaveTtsConfigSqliteRepository },
     { provide: SAVE_WEATHER_DATA_CONFIG_REPOSTIORY, useExisting: SaveWeatherDataConfigSqliteRepository },
+    { provide: UPDATE_DAILY_STATS_REPOSITORY, useExisting: UpdateDailyStatsSqliteRepository },
   ],
 })
 export class AtisInfrastructureModule {}
