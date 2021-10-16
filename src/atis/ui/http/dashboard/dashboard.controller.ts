@@ -31,7 +31,7 @@ export class DashboardController {
       chartLabels.push(new Date(v.dayTimestamp).toLocaleDateString());
       chartValues.push(v.messagesCount);
     });
-    const messagesPerDayAvg = dailyStats.length > 0 ? totalMessages / dailyStats.length : 0;
+    const messagesPerDayAvg = Math.round((totalMessages / new Date().getDate()) * 100) / 100;
 
     return {
       messageStats: {
