@@ -5,7 +5,7 @@ import { GetTtsLanguagesHandler } from './handler/get-tts-languages.handler';
 import { GetCurrentWeatherHandler } from './handler/get-current-weather.handler';
 import { SaveConfigHandler } from './handler/save-config.handler';
 import { ComposeMessageHandler } from './handler/compose-message.handler';
-import { SynthesizeHandler } from './handler/synthesize.handler';
+import { SynthesizeCurrentWeatherHandler } from './handler/synthesize-current-weather.handler';
 import { PlaySoundHandler } from './handler/play-sound.handler';
 
 @Module({
@@ -16,7 +16,7 @@ import { PlaySoundHandler } from './handler/play-sound.handler';
     GetCurrentWeatherHandler,
     SaveConfigHandler,
     ComposeMessageHandler,
-    SynthesizeHandler,
+    SynthesizeCurrentWeatherHandler,
     PlaySoundHandler,
   ],
 })

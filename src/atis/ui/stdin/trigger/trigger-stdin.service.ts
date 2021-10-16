@@ -3,12 +3,9 @@ import { TriggerService } from '../../../domain/service/trigger/trigger.service'
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GetConfigQuery } from '../../../application/query/get-config.query';
 import { Config } from '../../../domain/valueobject/config.vo';
-import { GetCurrentWeatherQuery } from '../../../application/query/get-current-weather.query';
-import { Weather } from '../../../domain/valueobject/weather.vo';
-import { ComposeMessageCommand } from '../../../application/command/compose-message.command';
-import { SynthesizeCommand } from '../../../application/command/synthesize.command';
-import * as path from 'path';
+import { SynthesizeCurrentWeatherCommand } from '../../../application/command/synthesize-current-weather.command';
 import { PlaySoundCommand } from '../../../application/command/play-sound.command';
+import { join } from 'path';
 
 @Injectable()
 export class TriggerStdinService implements TriggerService, OnApplicationBootstrap, OnApplicationShutdown {
@@ -24,15 +21,9 @@ export class TriggerStdinService implements TriggerService, OnApplicationBootstr
     this.stdinListener = process.stdin.on('data', async () => {
       try {
         const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
-        const weather = await this.queryBus.execute<GetCurrentWeatherQuery, Weather>(
-          new GetCurrentWeatherQuery(config.weatherData.url),
-        );
-        const message = await this.commandBus.execute<ComposeMessageCommand, string>(
-          new ComposeMessageCommand(weather, config.message),
-        );
-        this.logger.debug(message);
-        const mp3Path = await this.commandBus.execute<SynthesizeCommand, string>(
-          new SynthesizeCommand(message, config.tts.language, path.join(process.cwd(), 'output.mp3')),
+
+        const mp3Path = await this.commandBus.execute<SynthesizeCurrentWeatherCommand, string>(
+          new SynthesizeCurrentWeatherCommand(config, join(process.cwd(), 'output.mp3')),
         );
 
         await this.commandBus.execute<PlaySoundCommand, void>(new PlaySoundCommand(mp3Path));
