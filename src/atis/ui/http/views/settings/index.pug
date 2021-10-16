@@ -2,17 +2,6 @@ extends ../@main
 block active
     -var selected = 'settings'
 block content
-    div.buttons.is-right
-        if appRunning
-            a(href='/stop').button.is-danger
-                span.icon
-                    i.fas.fa-pause
-                span Pause application
-        else
-            a(href='/start').button.is-success
-                span.icon
-                    i.fas.fa-play
-                span Start application
     div.tabs
         ul
             li(data-tab='general').is-active
