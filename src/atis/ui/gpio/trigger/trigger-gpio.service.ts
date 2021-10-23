@@ -12,6 +12,7 @@ import { join } from 'path';
 export class TriggerGpioService implements TriggerService, OnApplicationBootstrap, OnApplicationShutdown {
   private gpioInput: Gpio | undefined;
   private gpioOutput: Gpio | undefined;
+  private tries = 0;
   constructor(
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
@@ -28,23 +29,39 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
       this.gpioInput.watch(async (err, value) => {
         this.logger.debug(`Received signal: ${value}`);
         if (err) {
-          this.logger.error(err);
-          return;
+          throw err;
         }
-
-        const mp3Path = await this.commandBus.execute<SynthesizeCurrentWeatherCommand, string>(
-          new SynthesizeCurrentWeatherCommand(config, join(process.cwd(), 'output.mp3')),
-        );
-
-        this.gpioOutput.writeSync(1);
-        this.logger.debug(`PTT start: GPIO value: ${this.gpioOutput.readSync()}`);
-        await this.commandBus.execute<PlaySoundCommand, void>(new PlaySoundCommand(mp3Path));
-        this.gpioOutput.writeSync(0);
+        await this.synthesizeCurrentWeather(config);
       });
     } catch (e) {
       this.logger.error(e);
-    } finally {
+    }
+  }
+
+  async synthesizeCurrentWeather(config: Config): Promise<void> {
+    this.tries = this.tries + 1;
+    try {
+      const mp3Path = await this.commandBus.execute<SynthesizeCurrentWeatherCommand, string>(
+        new SynthesizeCurrentWeatherCommand(config, join(process.cwd(), 'output.mp3')),
+      );
+
+      this.gpioOutput.writeSync(1);
+      this.logger.debug(`PTT start: GPIO value: ${this.gpioOutput.readSync()}`);
+
+      await this.commandBus.execute<PlaySoundCommand, void>(new PlaySoundCommand(mp3Path));
+
       this.gpioOutput.writeSync(0);
+      this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
+      this.tries = 0;
+    } catch (e) {
+      this.logger.error(e);
+      this.gpioOutput.writeSync(0);
+      this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
+      if (this.tries <= 3) {
+        return this.synthesizeCurrentWeather(config);
+      } else {
+        throw e;
+      }
     }
   }
 
