@@ -25,7 +25,7 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
 
       this.gpioInput = new Gpio(config.gpio.input, 'in', 'falling');
       this.gpioOutput = new Gpio(config.gpio.output, 'out', 'none', { debounceTimeout: 10 });
-      this.logger.log(`GPIO trigger running. Waiting for signal on pin ${this.gpioInput}.`);
+      this.logger.log(`GPIO trigger running. Waiting for signal on pin ${config.gpio.input}.`);
       this.gpioInput.watch(async (err, value) => {
         this.logger.debug(`Received signal: ${value}`);
         if (err) {
@@ -45,17 +45,17 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
         new SynthesizeCurrentWeatherCommand(config, join(process.cwd(), 'output.mp3')),
       );
 
-      this.gpioOutput.writeSync(1);
+      this.gpioOutput.writeSync(Gpio.HIGH);
       this.logger.debug(`PTT start: GPIO value: ${this.gpioOutput.readSync()}`);
 
       await this.commandBus.execute<PlaySoundCommand, void>(new PlaySoundCommand(mp3Path));
 
-      this.gpioOutput.writeSync(0);
+      this.gpioOutput.writeSync(Gpio.LOW);
       this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
       this.tries = 0;
     } catch (e) {
       this.logger.error(e);
-      this.gpioOutput.writeSync(0);
+      this.gpioOutput.writeSync(Gpio.LOW);
       this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
       if (this.tries <= 3) {
         return this.synthesizeCurrentWeather(config);
@@ -66,6 +66,8 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
   }
 
   unlisten(): void {
+    this.gpioOutput.writeSync(Gpio.LOW);
+
     this.gpioInput.unexport();
     this.gpioOutput.unexport();
   }
