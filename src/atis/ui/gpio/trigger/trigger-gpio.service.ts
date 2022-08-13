@@ -7,6 +7,7 @@ import { Config } from '../../../domain/valueobject/config.vo';
 import { SynthesizeCurrentWeatherCommand } from '../../../application/command/synthesize-current-weather.command';
 import { PlaySoundCommand } from '../../../application/command/play-sound.command';
 import { join } from 'path';
+import { retryAsync } from '../../../../utils/retry';
 
 @Injectable()
 export class TriggerGpioService implements TriggerService, OnApplicationBootstrap, OnApplicationShutdown {
@@ -31,7 +32,17 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
         if (err) {
           throw err;
         }
-        await this.synthesizeCurrentWeather(config);
+        await retryAsync(async () => this.synthesizeCurrentWeather(config), {
+          maxTries: 3,
+          afterEachError: (e) => {
+            this.logger.error(e);
+            this.gpioOutput.writeSync(Gpio.LOW);
+            this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
+          },
+          afterLastError: (e) => {
+            throw e;
+          },
+        });
       });
     } catch (e) {
       this.logger.error(e);
@@ -39,30 +50,17 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
   }
 
   async synthesizeCurrentWeather(config: Config): Promise<void> {
-    this.tries = this.tries + 1;
-    try {
-      const mp3Path = await this.commandBus.execute<SynthesizeCurrentWeatherCommand, string>(
-        new SynthesizeCurrentWeatherCommand(config, join(process.cwd(), 'output.mp3')),
-      );
+    const mp3Path = await this.commandBus.execute<SynthesizeCurrentWeatherCommand, string>(
+      new SynthesizeCurrentWeatherCommand(config, join(process.cwd(), 'output.mp3')),
+    );
 
-      this.gpioOutput.writeSync(Gpio.HIGH);
-      this.logger.debug(`PTT start: GPIO value: ${this.gpioOutput.readSync()}`);
+    this.gpioOutput.writeSync(Gpio.HIGH);
+    this.logger.debug(`PTT start: GPIO value: ${this.gpioOutput.readSync()}`);
 
-      await this.commandBus.execute<PlaySoundCommand, void>(new PlaySoundCommand(mp3Path));
+    await this.commandBus.execute<PlaySoundCommand, void>(new PlaySoundCommand(mp3Path));
 
-      this.gpioOutput.writeSync(Gpio.LOW);
-      this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
-      this.tries = 0;
-    } catch (e) {
-      this.logger.error(e);
-      this.gpioOutput.writeSync(Gpio.LOW);
-      this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
-      if (this.tries <= 3) {
-        return this.synthesizeCurrentWeather(config);
-      } else {
-        throw e;
-      }
-    }
+    this.gpioOutput.writeSync(Gpio.LOW);
+    this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
   }
 
   unlisten(): void {
