@@ -27,6 +27,7 @@ import { UnexpectedWeatherFormatException } from '../../../domain/exception/unex
 import { ConfigDto } from '../dto/config.dto';
 import { SaveConfigCommand } from '../../../application/command/save-config.command';
 import { ComposeMessageCommand } from '../../../application/command/compose-message.command';
+import { PvRecorder } from '@picovoice/pvrecorder-node';
 
 @Controller('/settings')
 export class SettingsController {
@@ -39,13 +40,16 @@ export class SettingsController {
   @Get()
   @Render('settings/index')
   async renderSettings(): Promise<SettingsTemplateProperties> {
+    const inputMode = process.env.INPUT_MODE;
     const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
+    const inputDevices = PvRecorder.getAudioDevices().map(this.mapSelectOptions(config.input.porcupine?.device));
     const languages = await this.queryBus.execute<GetTtsLanguagesQuery, string[]>(new GetTtsLanguagesQuery());
     const languagesOptions = languages.map(this.mapSelectOptions(config.tts.language));
     const tzs = this.momentTimezone.names();
     const rwySettings = config.message.rwy.map(this.mapTextConditions);
     const circuitSettings = config.message.circuits.map(this.mapTextConditions);
-    return { config, languagesOptions, tzs, rwySettings, circuitSettings };
+
+    return { config, inputMode, inputDevices, languagesOptions, tzs, rwySettings, circuitSettings };
   }
 
   @Post('/save')

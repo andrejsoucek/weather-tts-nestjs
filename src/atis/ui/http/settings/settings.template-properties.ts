@@ -9,4 +9,6 @@ export interface SettingsTemplateProperties {
   tzs: string[];
   rwySettings: Array<RunwayCondition & { options: SelectOption[] }>;
   circuitSettings: Array<CircuitCondition & { options: SelectOption[] }>;
+  inputMode: string;
+  inputDevices: string[];
 }

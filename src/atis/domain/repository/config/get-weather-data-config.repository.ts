@@ -4,4 +4,4 @@ export interface GetWeatherDataConfigRepository {
   getWeatherDataConfig(): Promise<WeatherDataConfig>;
 }
 
-export const GET_WEATHER_DATA_CONFIG_REPOSTIORY = Symbol.for('GetWeatherConfigDAO');
+export const GET_WEATHER_DATA_CONFIG_REPOSITORY = Symbol.for('GetWeatherConfigDAO');

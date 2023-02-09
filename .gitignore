@@ -40,3 +40,4 @@ lerna-debug.log*
 # TTS
 auth.json
 output.mp3
+*.ppn

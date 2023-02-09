@@ -1,11 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'gpio_config' })
-export class GpioConfigSqlite {
+@Entity({ name: 'output_config' })
+export class OutputConfigSqlite {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column()
-  input: number;
-  @Column()
-  output: number;
+  gpioOutputPin: number | null;
 }

@@ -1,32 +1,66 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsUrl } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString, IsUrl, ValidateIf } from 'class-validator';
 import { Expose, Transform } from 'class-transformer';
 import { Config } from '../../../domain/valueobject/config.vo';
-import { GpioConfig } from '../../../domain/entity/config/gpio-config.entity';
 import { TtsConfig } from '../../../domain/entity/config/tts-config.entity';
 import { WeatherDataConfig } from '../../../domain/entity/config/weather-data-config.entity';
 import { MessageConfig } from '../../../domain/entity/config/message-config.entity';
 import { RunwayCondition } from '../../../domain/valueobject/runway-condition.vo';
 import { Comparator } from '../../../domain/enum/comparator.enum';
 import { CircuitCondition } from '../../../domain/valueobject/circuit-condition.vo';
+import { InputConfig } from '../../../domain/entity/config/input-config.entity';
+import { OutputConfig } from '../../../domain/entity/config/output-config.entity';
+import { PorcupineConfig } from '../../../domain/valueobject/porcupine-config.vo';
 
 export class ConfigDto {
-  @Expose({ name: 'gpio-config-id' })
+  @Expose({ name: 'input-config-id' })
   @IsNotEmpty()
   @IsNumber()
   @Transform((id) => parseInt(id.value, 10))
-  gpioConfigId: number;
+  inputConfigId: number;
 
   @Expose({ name: 'gpio-input' })
+  @ValidateIf(() => process.env.INPUT_MODE === 'gpio')
   @IsNotEmpty()
   @IsNumber()
   @Transform((id) => parseInt(id.value, 10))
-  gpioInput!: number;
+  gpioInput?: number;
+
+  @Expose({ name: 'wakeword-device' })
+  @ValidateIf(() => process.env.INPUT_MODE === 'wakeword')
+  @IsNotEmpty()
+  @IsString()
+  wakewordDevice?: string;
+
+  @Expose({ name: 'porcupine-key' })
+  @ValidateIf(() => process.env.INPUT_MODE === 'wakeword')
+  @IsNotEmpty()
+  @IsString()
+  porcupineKey?: string;
+
+  @Expose({ name: 'wakeword-file' })
+  @ValidateIf(() => process.env.INPUT_MODE === 'wakeword')
+  @IsNotEmpty()
+  @IsString()
+  wakewordFile?: string;
+
+  @Expose({ name: 'wakeword-sensitivity' })
+  @ValidateIf(() => process.env.INPUT_MODE === 'wakeword')
+  @IsNotEmpty()
+  @IsNumber()
+  @Transform((id) => parseFloat(id.value))
+  wakewordSensitivity?: number;
+
+  @Expose({ name: 'output-config-id' })
+  @IsNotEmpty()
+  @IsNumber()
+  @Transform((id) => parseInt(id.value, 10))
+  outputConfigId: number;
 
   @Expose({ name: 'gpio-output' })
   @IsNotEmpty()
   @IsNumber()
   @Transform((id) => parseInt(id.value, 10))
-  gpioOutput!: number;
+  gpioOutput: number;
 
   @Expose({ name: 'weather-data-config-id' })
   @IsNotEmpty()
@@ -37,7 +71,7 @@ export class ConfigDto {
   @Expose({ name: 'realtime-url' })
   @IsNotEmpty()
   @IsUrl()
-  realtimeUrl!: string;
+  realtimeUrl: string;
 
   @Expose({ name: 'tts-config-id' })
   @IsNotEmpty()
@@ -47,7 +81,7 @@ export class ConfigDto {
 
   @Expose({ name: 'tts-language' })
   @IsNotEmpty()
-  ttsLanguage!: string;
+  ttsLanguage: string;
 
   @Expose({ name: 'message-config-id' })
   @IsNotEmpty()
@@ -57,98 +91,105 @@ export class ConfigDto {
 
   @Expose({ name: 'message-template' })
   @IsNotEmpty()
-  messageTemplate!: string;
+  messageTemplate: string;
 
   @Expose({ name: 'message-timezone' })
   @IsNotEmpty()
-  messageTimezone!: string;
+  messageTimezone: string;
 
   @Expose({ name: 'message-wind-calm' })
   @IsNotEmpty()
-  messageWindCalm!: string;
+  messageWindCalm: string;
 
   @Expose({ name: 'message-wind-speed-unit' })
   @IsNotEmpty()
-  messageWindSpeedUnit!: string;
+  messageWindSpeedUnit: string;
 
   @Expose({ name: 'message-wind-bearing-unit' })
   @IsNotEmpty()
-  messageWindBearingUnit!: string;
+  messageWindBearingUnit: string;
 
   @Expose({ name: 'message-wind-gust' })
   @IsNotEmpty()
-  messageWindGust!: string;
+  messageWindGust: string;
 
   @Expose({ name: 'message-temperature-unit' })
   @IsNotEmpty()
-  messageTemperatureUnit!: string;
+  messageTemperatureUnit: string;
 
   @Expose({ name: 'message-cloudbase-unit' })
   @IsNotEmpty()
-  messageCloudbaseUnit!: string;
+  messageCloudbaseUnit: string;
 
   @Expose({ name: 'message-rwy-comparator-0' })
   @IsNotEmpty()
   @IsEnum(Comparator)
-  messageRwyComparator0!: Comparator;
+  messageRwyComparator0: Comparator;
 
   @Expose({ name: 'message-rwy-value-0' })
   @IsNotEmpty()
   @Transform((id) => parseInt(id.value, 10))
-  messageRwyValue0!: number;
+  messageRwyValue0: number;
 
   @Expose({ name: 'message-rwy-result-0' })
   @IsNotEmpty()
-  messageRwyResult0!: string;
+  messageRwyResult0: string;
 
   @Expose({ name: 'message-rwy-comparator-1' })
   @IsNotEmpty()
   @IsEnum(Comparator)
-  messageRwyComparator1!: Comparator;
+  messageRwyComparator1: Comparator;
 
   @Expose({ name: 'message-rwy-value-1' })
   @IsNotEmpty()
   @IsNumber()
   @Transform((id) => parseInt(id.value, 10))
-  messageRwyValue1!: number;
+  messageRwyValue1: number;
 
   @Expose({ name: 'message-rwy-result-1' })
   @IsNotEmpty()
-  messageRwyResult1!: string;
+  messageRwyResult1: string;
 
   @Expose({ name: 'message-circuit-comparator-0' })
   @IsNotEmpty()
   @IsEnum(Comparator)
-  messageCircuitComparator0!: Comparator;
+  messageCircuitComparator0: Comparator;
 
   @Expose({ name: 'message-circuit-value-0' })
   @IsNotEmpty()
   @IsNumber()
   @Transform((id) => parseInt(id.value, 10))
-  messageCircuitValue0!: number;
+  messageCircuitValue0: number;
 
   @Expose({ name: 'message-circuit-result-0' })
   @IsNotEmpty()
-  messageCircuitResult0!: string;
+  messageCircuitResult0: string;
 
   @Expose({ name: 'message-circuit-comparator-1' })
   @IsNotEmpty()
   @IsEnum(Comparator)
-  messageCircuitComparator1!: Comparator;
+  messageCircuitComparator1: Comparator;
 
   @Expose({ name: 'message-circuit-value-1' })
   @IsNotEmpty()
   @IsNumber()
   @Transform((id) => parseInt(id.value, 10))
-  messageCircuitValue1!: number;
+  messageCircuitValue1: number;
 
   @Expose({ name: 'message-circuit-result-1' })
   @IsNotEmpty()
-  messageCircuitResult1!: string;
+  messageCircuitResult1: string;
 
   toValueObject(): Config {
     return new Config(
-      new GpioConfig(this.gpioConfigId, this.gpioInput, this.gpioOutput),
+      new InputConfig(
+        this.inputConfigId,
+        this.gpioInput,
+        process.env.INPUT_MODE === 'wakeword'
+          ? new PorcupineConfig(this.porcupineKey, this.wakewordFile, this.wakewordSensitivity, this.wakewordDevice)
+          : undefined,
+      ),
+      new OutputConfig(this.outputConfigId, this.gpioOutput),
       new TtsConfig(this.ttsConfigId, this.ttsLanguage),
       new WeatherDataConfig(this.weatherDataConfigId, this.realtimeUrl),
       new MessageConfig(

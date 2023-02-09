@@ -1,19 +1,16 @@
-import { Inject, Injectable, LoggerService, OnApplicationBootstrap, OnApplicationShutdown } from '@nestjs/common';
-import { TriggerService } from '../../../domain/service/trigger/trigger.service';
+import { Inject, Injectable, LoggerService, OnApplicationBootstrap } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { Gpio } from 'onoff';
 import { GetConfigQuery } from '../../../application/query/get-config.query';
 import { Config } from '../../../domain/valueobject/config.vo';
 import { SynthesizeCurrentWeatherCommand } from '../../../application/command/synthesize-current-weather.command';
-import { PlaySoundCommand } from '../../../application/command/play-sound.command';
 import { join } from 'path';
 import { retryAsync } from '../../../../utils/retry';
+import { TransmitMessageCommand } from '../../../application/command/transmit-message.command';
 
 @Injectable()
-export class TriggerGpioService implements TriggerService, OnApplicationBootstrap, OnApplicationShutdown {
-  private gpioInput: Gpio | undefined;
-  private gpioOutput: Gpio | undefined;
-  private tries = 0;
+export class TriggerGpioService implements OnApplicationBootstrap {
+  private gpioInput?: Gpio;
   constructor(
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
@@ -23,10 +20,9 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
   async listen(): Promise<void> {
     try {
       const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
-
-      this.gpioInput = new Gpio(config.gpio.input, 'in', 'falling');
-      this.gpioOutput = new Gpio(config.gpio.output, 'out', 'none', { debounceTimeout: 10 });
-      this.logger.log(`GPIO trigger running. Waiting for signal on pin ${config.gpio.input}.`);
+      // TODO typeguard
+      this.gpioInput = new Gpio(config.input.gpioInputPin, 'in', 'falling');
+      this.logger.log(`GPIO trigger running. Waiting for signal on pin ${config.input.gpioInputPin}.`);
       this.gpioInput.watch(async (err, value) => {
         this.logger.debug(`Received signal: ${value}`);
         if (err) {
@@ -36,8 +32,6 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
           maxTries: 3,
           afterEachError: (e) => {
             this.logger.error(e);
-            this.gpioOutput.writeSync(Gpio.LOW);
-            this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
           },
           afterLastError: (e) => {
             throw e;
@@ -54,27 +48,11 @@ export class TriggerGpioService implements TriggerService, OnApplicationBootstra
       new SynthesizeCurrentWeatherCommand(config, join(process.cwd(), 'output.mp3')),
     );
 
-    this.gpioOutput.writeSync(Gpio.HIGH);
-    this.logger.debug(`PTT start: GPIO value: ${this.gpioOutput.readSync()}`);
-
-    await this.commandBus.execute<PlaySoundCommand, void>(new PlaySoundCommand(mp3Path));
-
-    this.gpioOutput.writeSync(Gpio.LOW);
-    this.logger.debug(`PTT stop: GPIO value: ${this.gpioOutput.readSync()}`);
-  }
-
-  unlisten(): void {
-    this.gpioOutput.writeSync(Gpio.LOW);
-
-    this.gpioInput.unexport();
-    this.gpioOutput.unexport();
+    await this.commandBus.execute<TransmitMessageCommand, void>(new TransmitMessageCommand(mp3Path, config.output));
   }
 
   onApplicationBootstrap(): void {
+    this.logger.debug('Starting GPIO trigger service.');
     this.listen();
-  }
-
-  onApplicationShutdown(): void {
-    this.unlisten();
   }
 }

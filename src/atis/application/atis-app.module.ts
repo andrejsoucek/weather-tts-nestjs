@@ -6,8 +6,8 @@ import { GetCurrentWeatherHandler } from './handler/get-current-weather.handler'
 import { SaveConfigHandler } from './handler/save-config.handler';
 import { ComposeMessageHandler } from './handler/compose-message.handler';
 import { SynthesizeCurrentWeatherHandler } from './handler/synthesize-current-weather.handler';
-import { PlaySoundHandler } from './handler/play-sound.handler';
 import { GetDailyStatsHandler } from './handler/get-daily-stats.handler';
+import { TransmitMessageHandler } from './handler/transmit-message.handler';
 
 @Module({
   imports: [AtisDomainModule],
@@ -18,8 +18,8 @@ import { GetDailyStatsHandler } from './handler/get-daily-stats.handler';
     SaveConfigHandler,
     ComposeMessageHandler,
     SynthesizeCurrentWeatherHandler,
-    PlaySoundHandler,
     GetDailyStatsHandler,
+    TransmitMessageHandler,
   ],
 })
 export class AtisAppModule {}

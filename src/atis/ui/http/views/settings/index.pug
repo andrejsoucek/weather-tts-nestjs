@@ -12,16 +12,44 @@ block content
                 a Message settings
     form(method='POST' action='/settings/save')
         div(data-tabs-content='general')
-            input#gpio-config-id.input(type='hidden', name='gpio-config-id', value=config.gpio.id)
             div.field
-                label(for='gpio-input').label GPIO Input PIN Number:
-                div.control
-                    input#gpio-input.input(type='number', name='gpio-input', value=config.gpio.input)
-                p.help Raspberry GPIO pin number which will trigger the TTS
+                | Showing options for selected input mode:
+                span.ml-1.is-uppercase.has-text-weight-bold #{inputMode}
+            input#input-config-id.input(type='hidden', name='input-config-id', value=config.input.id)
+            if inputMode === 'gpio'
+                div.field
+                   label(for='gpio-input').label GPIO Input PIN Number:
+                   div.control
+                       input#gpio-input.input(type='number', name='gpio-input', value=config.gpio.input)
+                   p.help Raspberry GPIO pin number which will trigger the TTS
+            if inputMode === 'wakeword'
+                div.field
+                    label(for='wakeword-device').label Audio Input Device:
+                    div.control
+                        div.select
+                            select#wakeword-device(name='wakeword-device')
+                                each device in inputDevices
+                                    option(value=device.id, selected=device.selected) #{device.label}
+                div.field
+                   label(for='porcupine-key').label Porcupine Access Key:
+                   div.control
+                       input#wakeword.input(type='text', name='porcupine-key', value=config.input.porcupine.accessKey)
+                   p.help Access Key from Picovoice Console
+                div.field
+                   label(for='wakeword-file').label Porcupine .ppn File:
+                   div.control
+                       input#wakeword.input(type='text', name='wakeword-file', value=config.input.porcupine.ppnFilePath)
+                   p.help PPN file with trained blahblah
+                div.field
+                    label(for='wakeword-sensitivity').label Sensitivity:
+                    div.control
+                        input#wakeword.input(type='number', min=0, max=1, step=0.01, name='wakeword-sensitivity', value=config.input.porcupine.sensitivity)
+                    p.help Sensitivity to trade miss rate for false alarm (0.0 - 1.0)
+            input#output-config-id.input(type='hidden', name='output-config-id', value=config.output.id)
             div.field
                 label(for='gpio-output').label GPIO Output PIN Number:
                 div.control
-                    input#gpio-output.input(type='number', name='gpio-output', value=config.gpio.output)
+                    input#gpio-output.input(type='number', name='gpio-output', value=config.output.gpioOutputPin)
                 p.help Raspberry GPIO pin number which will handle the PTT
             div.field
                 input#weather-data-config-id.input(type='hidden', name='weather-data-config-id', value=config.weatherData.id)

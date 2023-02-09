@@ -10,19 +10,25 @@ import { MessageService } from './service/message/message.service';
 import { SynthesizeCurrentWeatherUseCase } from './usecase/synthesize-current-weather.use-case';
 import { PlaySoundUseCase } from './usecase/play-sound.use-case';
 import { GetDailyStatsUseCase } from './usecase/get-daily-stats.use-case';
+import { TransmitMessageUseCase } from './usecase/transmit-message.use-case';
+
+const useCases = [
+  GetConfigUseCase,
+  GetTtsLanguagesUseCase,
+  GetCurrentWeatherUseCase,
+  SaveConfigUseCase,
+  ComposeMessageUseCase,
+  SynthesizeCurrentWeatherUseCase,
+  PlaySoundUseCase,
+  GetDailyStatsUseCase,
+  TransmitMessageUseCase,
+];
 
 @Module({
   imports: [AtisInfrastructureModule],
   providers: [
+    ...useCases,
     MessageService,
-    GetConfigUseCase,
-    GetTtsLanguagesUseCase,
-    GetCurrentWeatherUseCase,
-    SaveConfigUseCase,
-    ComposeMessageUseCase,
-    SynthesizeCurrentWeatherUseCase,
-    PlaySoundUseCase,
-    GetDailyStatsUseCase,
     {
       provide: 'MomentTimezone',
       useValue: moment.tz,
@@ -32,16 +38,6 @@ import { GetDailyStatsUseCase } from './usecase/get-daily-stats.use-case';
       useFactory: () => new Logger('MessageLogger'),
     },
   ],
-  exports: [
-    GetConfigUseCase,
-    GetTtsLanguagesUseCase,
-    GetCurrentWeatherUseCase,
-    SaveConfigUseCase,
-    GetConfigUseCase,
-    ComposeMessageUseCase,
-    SynthesizeCurrentWeatherUseCase,
-    PlaySoundUseCase,
-    GetDailyStatsUseCase,
-  ],
+  exports: [...useCases],
 })
 export class AtisDomainModule {}
