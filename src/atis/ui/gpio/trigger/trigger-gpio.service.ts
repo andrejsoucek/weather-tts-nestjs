@@ -31,6 +31,7 @@ export class TriggerGpioService implements OnApplicationBootstrap {
         await retryAsync(async () => this.synthesizeCurrentWeather(config), {
           maxTries: 3,
           afterEachError: (e) => {
+            this.logger.warn('Error during synthesizeCurrentWeather, retrying...');
             this.logger.error(e);
           },
           afterLastError: (e) => {
@@ -40,6 +41,7 @@ export class TriggerGpioService implements OnApplicationBootstrap {
       });
     } catch (e) {
       this.logger.error(e);
+      process.exit(1);
     }
   }
 

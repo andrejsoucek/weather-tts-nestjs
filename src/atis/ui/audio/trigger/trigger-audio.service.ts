@@ -61,6 +61,7 @@ export class TriggerAudioService implements OnApplicationBootstrap {
       }
     } catch (e) {
       this.logger.error(e);
+      process.exit(1);
     }
   }
 
