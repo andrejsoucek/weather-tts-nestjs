@@ -28,6 +28,7 @@ export class TriggerStdinService implements OnApplicationBootstrap {
         await this.commandBus.execute<TransmitMessageCommand, void>(new TransmitMessageCommand(mp3Path, config.output));
       } catch (e) {
         this.logger.error(e);
+        this.logger.error('Exiting process.');
         process.exit(1);
       }
     });

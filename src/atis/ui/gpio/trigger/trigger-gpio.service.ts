@@ -41,6 +41,7 @@ export class TriggerGpioService implements OnApplicationBootstrap {
       });
     } catch (e) {
       this.logger.error(e);
+      this.logger.error('Exiting process.');
       process.exit(1);
     }
   }

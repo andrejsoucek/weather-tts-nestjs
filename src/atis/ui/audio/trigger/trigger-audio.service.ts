@@ -48,6 +48,7 @@ export class TriggerAudioService implements OnApplicationBootstrap {
           await retryAsync(async () => this.synthesizeCurrentWeather(config), {
             maxTries: 3,
             afterEachError: (e) => {
+              this.logger.warn('Error during synthesizeCurrentWeather, retrying...');
               this.logger.error(e);
             },
             afterLastError: (e) => {
@@ -61,6 +62,7 @@ export class TriggerAudioService implements OnApplicationBootstrap {
       }
     } catch (e) {
       this.logger.error(e);
+      this.logger.error('Exiting process.');
       process.exit(1);
     }
   }
