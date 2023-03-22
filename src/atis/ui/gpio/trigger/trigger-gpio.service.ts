@@ -28,7 +28,7 @@ export class TriggerGpioService implements OnApplicationBootstrap {
         if (err) {
           throw err;
         }
-        await retryAsync(async () => this.synthesizeCurrentWeather(config), {
+        await retryAsync(async () => this.synthesizeCurrentWeather(), {
           maxTries: 3,
           afterEachError: (e) => {
             this.logger.warn('Error during synthesizeCurrentWeather, retrying...');
@@ -46,7 +46,9 @@ export class TriggerGpioService implements OnApplicationBootstrap {
     }
   }
 
-  async synthesizeCurrentWeather(config: Config): Promise<void> {
+  async synthesizeCurrentWeather(): Promise<void> {
+    // reload config to not miss changes
+    const config = await this.queryBus.execute<GetConfigQuery, Config>(new GetConfigQuery());
     const mp3Path = await this.commandBus.execute<SynthesizeCurrentWeatherCommand, string>(
       new SynthesizeCurrentWeatherCommand(config, join(process.cwd(), 'output.mp3')),
     );
